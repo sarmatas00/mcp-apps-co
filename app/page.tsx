@@ -2,6 +2,7 @@
 
 import { AppCard, AppGrid, type AppData } from "@/components/app-card";
 import { SearchCommand } from "@/components/search-command";
+import { CategoryFilter } from "@/components/category-filter";
 
 // Sample MCP Apps data
 const sampleApps: AppData[] = [
@@ -240,6 +241,21 @@ export default function Home() {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Category Filter Bar */}
+        <section className="border-y border-[#333] bg-[#0a0a0a]">
+          <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12 py-6">
+            <CategoryFilter
+              categories={[
+                { id: "data-visualization", name: "Data Visualization", count: 12 },
+                { id: "developer-tools", name: "Developer Tools", count: 24 },
+                { id: "productivity", name: "Productivity", count: 18 },
+                { id: "communication", name: "Communication", count: 8 },
+                { id: "content-creation", name: "Content Creation", count: 15 },
+              ]}
+            />
           </div>
         </section>
 
