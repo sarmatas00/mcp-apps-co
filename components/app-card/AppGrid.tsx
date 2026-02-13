@@ -10,7 +10,7 @@ export function AppGrid({ children, className }: AppGridProps) {
   return (
     <div
       className={cn(
-        "grid gap-4 sm:gap-5 lg:gap-6",
+        "grid gap-3 sm:gap-4 lg:gap-5",
         "grid-cols-1",
         "sm:grid-cols-2",
         "lg:grid-cols-3",

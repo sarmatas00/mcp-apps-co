@@ -1,21 +1,16 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
-  variable: "--font-geist-sans",
+  variable: "--font-inter",
   subsets: ["latin"],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
-  title: "MCP Apps Directory - Interactive UI Components for AI",
-  description: "Discover and install MCP Apps — interactive UI components that bring your AI conversations to life. Curated marketplace for Claude, ChatGPT, VS Code, and more.",
-  keywords: ["MCP Apps", "MCP", "Model Context Protocol", "AI UI", "Claude", "ChatGPT", "VS Code"],
+  title: "MCP Apps — Swiss Studio",
+  description: "Curated interactive UI components for AI. A brutalist approach to the Model Context Protocol ecosystem.",
 };
 
 export default function RootLayout({
@@ -25,9 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body
-        className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
-      >
+      <body className={`${inter.variable} font-sans antialiased`}>
         {children}
       </body>
     </html>

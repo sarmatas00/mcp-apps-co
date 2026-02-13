@@ -21,7 +21,6 @@ interface ClientBadgeProps {
   name: string;
   icon: React.ReactNode;
   supported: boolean;
-  colorClass: string;
   showLabel?: boolean;
 }
 
@@ -29,26 +28,25 @@ function ClientBadge({
   name,
   icon,
   supported,
-  colorClass,
   showLabel = false,
 }: ClientBadgeProps) {
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-all duration-200",
-        "backdrop-blur-sm border",
+        "inline-flex items-center gap-1.5 px-2 py-1 text-[10px] font-medium tracking-[0.05em] uppercase",
+        "border transition-all duration-200",
         supported
-          ? cn("bg-neutral-900/80 border-neutral-700/50", colorClass)
-          : "bg-neutral-900/40 border-neutral-800/30 text-neutral-600 grayscale"
+          ? "bg-[#111] border-[#444] text-white"
+          : "bg-[#111]/50 border-[#222] text-[#444] grayscale"
       )}
       title={`${name}: ${supported ? "Supported" : "Not supported"}`}
     >
       {icon}
       {showLabel && <span>{name}</span>}
       {supported ? (
-        <Check className="w-3 h-3 ml-0.5" />
+        <Check className="w-2.5 h-2.5" />
       ) : (
-        <X className="w-3 h-3 ml-0.5" />
+        <X className="w-2.5 h-2.5" />
       )}
     </div>
   );
@@ -63,38 +61,33 @@ export function ClientBadges({
     {
       name: "Claude",
       key: "claude" as const,
-      icon: <Sparkles className="w-3.5 h-3.5" />,
-      colorClass: "text-violet-400",
+      icon: <Sparkles className="w-3 h-3" />,
     },
     {
       name: "ChatGPT",
       key: "chatgpt" as const,
-      icon: <MessageCircle className="w-3.5 h-3.5" />,
-      colorClass: "text-green-400",
+      icon: <MessageCircle className="w-3 h-3" />,
     },
     {
       name: "VS Code",
       key: "vscode" as const,
-      icon: <Code className="w-3.5 h-3.5" />,
-      colorClass: "text-blue-400",
+      icon: <Code className="w-3 h-3" />,
     },
     {
       name: "Goose",
       key: "goose" as const,
-      icon: <Bird className="w-3.5 h-3.5" />,
-      colorClass: "text-orange-400",
+      icon: <Bird className="w-3 h-3" />,
     },
   ];
 
   return (
-    <div className={cn("flex flex-wrap gap-1.5", className)}>
+    <div className={cn("flex flex-wrap gap-1", className)}>
       {clients.map((client) => (
         <ClientBadge
           key={client.key}
           name={client.name}
           icon={client.icon}
           supported={compatibility[client.key]}
-          colorClass={client.colorClass}
           showLabel={showLabels}
         />
       ))}
@@ -110,37 +103,29 @@ export function ClientBadgeOverlay({
     {
       name: "Claude",
       key: "claude" as const,
-      icon: <Sparkles className="w-3 h-3" />,
-      colorClass: "text-violet-400",
-      bgClass: "bg-violet-500/20",
+      icon: <Sparkles className="w-2.5 h-2.5" />,
     },
     {
       name: "ChatGPT",
       key: "chatgpt" as const,
-      icon: <MessageCircle className="w-3 h-3" />,
-      colorClass: "text-green-400",
-      bgClass: "bg-green-500/20",
+      icon: <MessageCircle className="w-2.5 h-2.5" />,
     },
     {
       name: "VS Code",
       key: "vscode" as const,
-      icon: <Code className="w-3 h-3" />,
-      colorClass: "text-blue-400",
-      bgClass: "bg-blue-500/20",
+      icon: <Code className="w-2.5 h-2.5" />,
     },
     {
       name: "Goose",
       key: "goose" as const,
-      icon: <Bird className="w-3 h-3" />,
-      colorClass: "text-orange-400",
-      bgClass: "bg-orange-500/20",
+      icon: <Bird className="w-2.5 h-2.5" />,
     },
   ];
 
   return (
     <div
       className={cn(
-        "absolute bottom-3 left-3 right-3 flex flex-wrap gap-1.5",
+        "absolute bottom-0 left-0 right-0 flex flex-wrap gap-1 p-3",
         className
       )}
     >
@@ -150,23 +135,20 @@ export function ClientBadgeOverlay({
           <div
             key={client.key}
             className={cn(
-              "inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium",
-              "backdrop-blur-md border transition-all duration-200",
+              "inline-flex items-center gap-1 px-1.5 py-0.5 text-[9px] font-medium tracking-[0.05em] uppercase",
+              "border transition-all duration-200",
               supported
-                ? cn(
-                    "bg-neutral-950/70 border-neutral-700/50",
-                    client.colorClass
-                  )
-                : "bg-neutral-950/40 border-neutral-800/30 text-neutral-600 grayscale opacity-60"
+                ? "bg-[#111] border-[#444] text-white"
+                : "bg-[#111]/60 border-[#222] text-[#444] grayscale opacity-70"
             )}
             title={`${client.name}: ${supported ? "Supported" : "Not supported"}`}
           >
             {client.icon}
             <span className="hidden sm:inline">{client.name}</span>
             {supported ? (
-              <Check className="w-2.5 h-2.5" />
+              <Check className="w-2 h-2" />
             ) : (
-              <X className="w-2.5 h-2.5" />
+              <X className="w-2 h-2" />
             )}
           </div>
         );

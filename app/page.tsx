@@ -1,9 +1,8 @@
 "use client";
 
-import { Sparkles, AppWindow, Code2, Zap } from "lucide-react";
 import { AppCard, AppGrid, type AppData } from "@/components/app-card";
 
-// Sample MCP Apps data for demonstration
+// Sample MCP Apps data
 const sampleApps: AppData[] = [
   {
     id: "1",
@@ -105,106 +104,226 @@ const sampleApps: AppData[] = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#0A0A0A]">
-      {/* Navigation */}
-      <nav className="border-b border-neutral-800/50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#111] text-white">
+      {/* Architectural Grid Lines - Top */}
+      <div className="fixed top-0 left-0 right-0 h-px bg-[#333] z-50" />
+      <div className="fixed top-0 bottom-0 left-[50%] w-px bg-[#333] z-40 hidden lg:block" />
+      
+      {/* Navigation - Minimal */}
+      <nav className="border-b border-[#333]">
+        <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12">
           <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-600 to-violet-700">
-                <AppWindow className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-lg font-semibold text-neutral-100">
-                MCP Apps
-              </span>
-            </div>
             <div className="flex items-center gap-4">
-              <a
-                href="https://github.com/modelcontextprotocol/ext-apps"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
-              >
-                <Code2 className="h-4 w-4" />
-                <span className="hidden sm:inline">GitHub</span>
-              </a>
+              <span className="text-xs font-medium tracking-[0.2em] uppercase text-[#666]">MCP</span>
+              <span className="text-sm font-semibold tracking-tight">APPS</span>
+            </div>
+            <div className="flex items-center gap-8">
+              <span className="text-xs font-medium tracking-[0.1em] uppercase text-[#666] hidden sm:inline">
+                Swiss Studio
+              </span>
+              <div className="w-2 h-2 bg-[#dc2626]" />
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center justify-center py-16 sm:py-24 text-center">
-          {/* Badge */}
-          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-4 py-1.5">
-            <Sparkles className="h-4 w-4 text-violet-400" />
-            <span className="text-sm text-violet-300">
-              v0.1.0 - AppCard Component
-            </span>
-          </div>
-
-          {/* Main Heading */}
-          <h1 className="max-w-4xl text-4xl font-bold tracking-tight text-neutral-100 sm:text-6xl">
-            MCP Apps Directory
-          </h1>
-          
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-neutral-400">
-            The curated marketplace for interactive UI components that bring your AI conversations to life. 
-            Discover apps for Claude, ChatGPT, VS Code, and more.
-          </p>
-
-          {/* Feature Pills */}
-          <div className="mt-10 flex flex-wrap justify-center gap-3">
-            <div className="flex items-center gap-2 rounded-full bg-neutral-900 border border-neutral-800 px-4 py-2 text-sm text-neutral-400">
-              <Zap className="h-4 w-4 text-cyan-400" />
-              Interactive Components
+      <main>
+        {/* Hero Section - Broken Grid, Massive Typography */}
+        <section className="relative border-b border-[#333]">
+          <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[70vh]">
+              {/* Left Column - Massive Type */}
+              <div className="flex flex-col justify-center py-16 lg:py-24 lg:pr-12 border-r border-[#333]">
+                <div className="space-y-8">
+                  {/* Version Label */}
+                  <div className="flex items-center gap-4">
+                    <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-[#666]">
+                      v0.1.0
+                    </span>
+                    <div className="h-px flex-1 bg-[#333]" />
+                  </div>
+                  
+                  {/* Massive Headline */}
+                  <h1 className="text-[clamp(3rem,12vw,9rem)] font-black leading-[0.85] tracking-[-0.04em] uppercase">
+                    MCP
+                    <br />
+                    <span className="text-[#666]">APPS</span>
+                  </h1>
+                  
+                  {/* Subhead */}
+                  <p className="text-lg sm:text-xl text-[#888] max-w-md leading-relaxed tracking-tight">
+                    Curated interactive UI components for AI. 
+                    Built for Claude, ChatGPT, VS Code, and more.
+                  </p>
+                  
+                  {/* CTA - Red Accent */}
+                  <div className="pt-4">
+                    <button className="group inline-flex items-center gap-4 bg-[#dc2626] text-white px-8 py-4 text-sm font-semibold tracking-[0.05em] uppercase hover:bg-[#b91c1c] transition-colors">
+                      <span>Browse Collection</span>
+                      <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Right Column - Architectural Stats */}
+              <div className="flex flex-col justify-between py-16 lg:py-24 lg:pl-12 border-t lg:border-t-0 border-[#333]">
+                {/* Stats Grid */}
+                <div className="grid grid-cols-2 gap-px bg-[#333]">
+                  <div className="bg-[#111] p-6 sm:p-8">
+                    <span className="text-[clamp(2rem,5vw,4rem)] font-black text-white leading-none">
+                      {sampleApps.length}
+                    </span>
+                    <p className="text-xs font-medium tracking-[0.15em] uppercase text-[#666] mt-2">
+                      Featured Apps
+                    </p>
+                  </div>
+                  <div className="bg-[#111] p-6 sm:p-8">
+                    <span className="text-[clamp(2rem,5vw,4rem)] font-black text-white leading-none">
+                      4
+                    </span>
+                    <p className="text-xs font-medium tracking-[0.15em] uppercase text-[#666] mt-2">
+                      Platforms
+                    </p>
+                  </div>
+                  <div className="bg-[#111] p-6 sm:p-8">
+                    <span className="text-[clamp(2rem,5vw,4rem)] font-black text-[#dc2626] leading-none">
+                      ∞
+                    </span>
+                    <p className="text-xs font-medium tracking-[0.15em] uppercase text-[#666] mt-2">
+                      Possibilities
+                    </p>
+                  </div>
+                  <div className="bg-[#111] p-6 sm:p-8">
+                    <span className="text-[clamp(2rem,5vw,4rem)] font-black text-white leading-none">
+                      0
+                    </span>
+                    <p className="text-xs font-medium tracking-[0.15em] uppercase text-[#666] mt-2">
+                      Borders
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Bottom Quote */}
+                <div className="pt-12 lg:pt-0">
+                  <p className="text-xs font-medium tracking-[0.1em] uppercase text-[#444] max-w-xs">
+                    "Good design is as little design as possible."
+                  </p>
+                  <p className="text-[10px] tracking-[0.15em] uppercase text-[#333] mt-2">
+                    — Dieter Rams
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-2 rounded-full bg-neutral-900 border border-neutral-800 px-4 py-2 text-sm text-neutral-400">
-              <AppWindow className="h-4 w-4 text-violet-400" />
-              Multi-Platform
-            </div>
-            <div className="flex items-center gap-2 rounded-full bg-neutral-900 border border-neutral-800 px-4 py-2 text-sm text-neutral-400">
-              <Code2 className="h-4 w-4 text-emerald-400" />
-              Open Source
-            </div>
           </div>
-        </div>
-
-        {/* App Cards Grid */}
-        <section className="pb-24">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-semibold text-neutral-100">Featured Apps</h2>
-            <span className="text-sm text-neutral-500">{sampleApps.length} apps</span>
-          </div>
-          
-          <AppGrid>
-            {sampleApps.map((app) => (
-              <AppCard
-                key={app.id}
-                app={app}
-                onClick={() => console.log(`Clicked on ${app.name}`)}
-              />
-            ))}
-          </AppGrid>
         </section>
 
-        {/* Footer */}
-        <footer className="border-t border-neutral-800 py-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-neutral-500">
-              © 2026 MCP Apps Directory. All rights reserved.
-            </p>
-            <div className="flex items-center gap-6">
-              <a href="#" className="text-sm text-neutral-500 hover:text-neutral-300 transition-colors">
-                Privacy
-              </a>
-              <a href="#" className="text-sm text-neutral-500 hover:text-neutral-300 transition-colors">
-                Terms
-              </a>
-              <a href="#" className="text-sm text-neutral-500 hover:text-neutral-300 transition-colors">
-                Contact
-              </a>
+        {/* Apps Section - Asymmetric Grid */}
+        <section className="py-24 sm:py-32">
+          <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12">
+            {/* Section Header - Left Aligned */}
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-16 pb-8 border-b border-[#333]">
+              <div>
+                <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-[#666] block mb-2">
+              Featured
+                </span>
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-[-0.03em] uppercase">
+                  COLLECTION
+                </h2>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-xs font-medium tracking-[0.1em] uppercase text-[#666]">
+                  {sampleApps.length} Apps
+                </span>
+                <div className="w-12 h-px bg-[#333]" />
+              </div>
+            </div>
+            
+            {/* App Grid */}
+            <AppGrid>
+              {sampleApps.map((app) => (
+                <AppCard
+                  key={app.id}
+                  app={app}
+                  onClick={() => console.log(`Clicked on ${app.name}`)}
+                />
+              ))}
+            </AppGrid>
+          </div>
+        </section>
+
+        {/* CTA Section - Full Width */}
+        <section className="border-t border-[#333]">
+          <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2">
+              <div className="py-16 lg:py-24 lg:pr-12 border-r border-[#333]">
+                <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-[#dc2626] block mb-4">
+                  Submit Your App
+                </span>
+                <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-[-0.03em] uppercase leading-[0.95] mb-6">
+                  JOIN THE
+                  <br />
+                  DIRECTORY
+                </h3>
+                <p className="text-[#888] max-w-md mb-8">
+                  Have you built an MCP App? Submit it to our curated directory and reach thousands of developers.
+                </p>
+                <button className="inline-flex items-center gap-4 border border-[#333] text-white px-6 py-3 text-xs font-semibold tracking-[0.1em] uppercase hover:bg-white hover:text-black transition-colors">
+                  <span>Get Started</span>
+                  <span>→</span>
+                </button>
+              </div>
+              <div className="py-16 lg:py-24 lg:pl-12 border-t lg:border-t-0 border-[#333] flex items-center">
+                <div className="grid grid-cols-2 gap-8 w-full">
+                  <div className="border-l-2 border-[#dc2626] pl-4">
+                    <span className="text-2xl font-black">MIT</span>
+                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">License</p>
+                  </div>
+                  <div className="border-l-2 border-[#333] pl-4">
+                    <span className="text-2xl font-black">Open</span>
+                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">Source</p>
+                  </div>
+                  <div className="border-l-2 border-[#333] pl-4">
+                    <span className="text-2xl font-black">Curated</span>
+                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">Quality</p>
+                  </div>
+                  <div className="border-l-2 border-[#333] pl-4">
+                    <span className="text-2xl font-black">Global</span>
+                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">Community</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer - Architectural */}
+        <footer className="border-t border-[#333]">
+          <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12">
+            <div className="py-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <span className="text-xs font-medium tracking-[0.2em] uppercase text-[#444]">
+                  MCP APPS
+                </span>
+                <div className="w-2 h-2 bg-[#333]" />
+                <span className="text-[10px] tracking-[0.15em] uppercase text-[#333]">
+                  Swiss Studio
+                </span>
+              </div>
+              <div className="flex items-center gap-8">
+                <a href="#" className="text-[10px] tracking-[0.15em] uppercase text-[#555] hover:text-white transition-colors">
+                  GitHub
+                </a>
+                <a href="#" className="text-[10px] tracking-[0.15em] uppercase text-[#555] hover:text-white transition-colors">
+                  Docs
+                </a>
+                <a href="#" className="text-[10px] tracking-[0.15em] uppercase text-[#555] hover:text-white transition-colors">
+                  Contact
+                </a>
+              </div>
+              <span className="text-[10px] tracking-[0.1em] text-[#333]">
+                © 2026
+              </span>
             </div>
           </div>
         </footer>
