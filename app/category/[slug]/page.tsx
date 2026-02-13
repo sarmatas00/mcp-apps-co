@@ -114,9 +114,14 @@ function formatCategoryName(slug: string): string {
   );
 }
 
-export default function CategoryPage({ params }: { params: { slug: string } }) {
-  const categoryName = formatCategoryName(params.slug);
-  const categoryApps = allApps.filter((app) => app.category === params.slug);
+export default async function CategoryPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const categoryName = formatCategoryName(slug);
+  const categoryApps = allApps.filter((app) => app.category === slug);
 
   return (
     <div className="min-h-screen bg-[#111] text-white">
@@ -202,10 +207,7 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
         {/* Filter Bar */}
         <section className="border-b border-[#333] bg-[#0a0a0a]">
           <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12 py-6">
-            <CategoryFilter
-              categories={categories}
-              activeCategory={params.slug}
-            />
+            <CategoryFilter categories={categories} activeCategory={slug} />
           </div>
         </section>
 
@@ -243,7 +245,7 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
             </span>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
               {categories
-                .filter((c) => c.id !== params.slug)
+                .filter((c) => c.id !== slug)
                 .map((category) => (
                   <Link
                     key={category.id}
