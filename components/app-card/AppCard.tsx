@@ -65,7 +65,7 @@ export function AppCard({ app, onClick, className }: AppCardProps) {
         "overflow-hidden cursor-pointer",
         "transition-all duration-200 ease-out",
         "hover:border-[#555] hover:-translate-y-0.5",
-        className
+        className,
       )}
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
@@ -87,7 +87,7 @@ export function AppCard({ app, onClick, className }: AppCardProps) {
             fill
             className={cn(
               "object-cover transition-transform duration-300 ease-out",
-              isHovered && "scale-[1.02]"
+              isHovered && "scale-[1.02]",
             )}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             onError={() => setImageError(true)}
@@ -100,7 +100,9 @@ export function AppCard({ app, onClick, className }: AppCardProps) {
                   {app.name.charAt(0).toUpperCase()}
                 </span>
               </div>
-              <span className="text-[10px] tracking-[0.1em] uppercase text-[#555]">Preview unavailable</span>
+              <span className="text-[10px] tracking-[0.1em] uppercase text-[#555]">
+                Preview unavailable
+              </span>
             </div>
           </div>
         )}

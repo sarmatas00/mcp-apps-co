@@ -10,7 +10,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "MCP Apps — Swiss Studio",
-  description: "Curated interactive UI components for AI. A brutalist approach to the Model Context Protocol ecosystem.",
+  description:
+    "Curated interactive UI components for AI. A brutalist approach to the Model Context Protocol ecosystem.",
 };
 
 export default function RootLayout({

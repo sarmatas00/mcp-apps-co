@@ -37,7 +37,7 @@ function ClientBadge({
         "border transition-all duration-200",
         supported
           ? "bg-[#111] border-[#444] text-white"
-          : "bg-[#111]/50 border-[#222] text-[#444] grayscale"
+          : "bg-[#111]/50 border-[#222] text-[#444] grayscale",
       )}
       title={`${name}: ${supported ? "Supported" : "Not supported"}`}
     >
@@ -126,7 +126,7 @@ export function ClientBadgeOverlay({
     <div
       className={cn(
         "absolute bottom-0 left-0 right-0 flex flex-wrap gap-1 p-3",
-        className
+        className,
       )}
     >
       {clients.map((client) => {
@@ -139,7 +139,7 @@ export function ClientBadgeOverlay({
               "border transition-all duration-200",
               supported
                 ? "bg-[#111] border-[#444] text-white"
-                : "bg-[#111]/60 border-[#222] text-[#444] grayscale opacity-70"
+                : "bg-[#111]/60 border-[#222] text-[#444] grayscale opacity-70",
             )}
             title={`${client.name}: ${supported ? "Supported" : "Not supported"}`}
           >

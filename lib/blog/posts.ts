@@ -1,9 +1,9 @@
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
-import readingTime from 'reading-time';
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
+import readingTime from "reading-time";
 
-const postsDirectory = path.join(process.cwd(), 'content/blog');
+const postsDirectory = path.join(process.cwd(), "content/blog");
 
 export interface BlogPost {
   slug: string;
@@ -28,21 +28,21 @@ export function getAllPosts(): BlogPost[] {
 
   const fileNames = fs.readdirSync(postsDirectory);
   const allPosts = fileNames
-    .filter(fileName => fileName.endsWith('.mdx'))
-    .map(fileName => {
+    .filter((fileName) => fileName.endsWith(".mdx"))
+    .map((fileName) => {
       // Remove .mdx extension
-      const slug = fileName.replace(/\.mdx$/, '');
-      
+      const slug = fileName.replace(/\.mdx$/, "");
+
       // Read file content
       const fullPath = path.join(postsDirectory, fileName);
-      const fileContents = fs.readFileSync(fullPath, 'utf8');
-      
+      const fileContents = fs.readFileSync(fullPath, "utf8");
+
       // Parse frontmatter
       const { data, content } = matter(fileContents);
-      
+
       // Calculate reading time
       const stats = readingTime(content);
-      
+
       return {
         slug: data.slug || slug,
         title: data.title,
@@ -68,22 +68,22 @@ export function getPostBySlug(slug: string): BlogPost | null {
   try {
     // Try to find file by slug in frontmatter or filename
     const posts = getAllPosts();
-    const post = posts.find(p => p.slug === slug);
-    
+    const post = posts.find((p) => p.slug === slug);
+
     if (post) {
       return post;
     }
-    
+
     // Fallback: try direct file read
     const fullPath = path.join(postsDirectory, `${slug}.mdx`);
     if (!fs.existsSync(fullPath)) {
       return null;
     }
-    
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
+
+    const fileContents = fs.readFileSync(fullPath, "utf8");
     const { data, content } = matter(fileContents);
     const stats = readingTime(content);
-    
+
     return {
       slug: data.slug || slug,
       title: data.title,
@@ -106,22 +106,24 @@ export function getPostBySlug(slug: string): BlogPost | null {
 
 export function getAllCategories(): string[] {
   const posts = getAllPosts();
-  const categories = new Set(posts.map(post => post.category).filter(Boolean));
+  const categories = new Set(
+    posts.map((post) => post.category).filter(Boolean),
+  );
   return Array.from(categories);
 }
 
 export function getAllTags(): string[] {
   const posts = getAllPosts();
-  const tags = new Set(posts.flatMap(post => post.tags));
+  const tags = new Set(posts.flatMap((post) => post.tags));
   return Array.from(tags);
 }
 
 export function getPostsByCategory(category: string): BlogPost[] {
   const posts = getAllPosts();
-  return posts.filter(post => post.category === category);
+  return posts.filter((post) => post.category === category);
 }
 
 export function getPostsByTag(tag: string): BlogPost[] {
   const posts = getAllPosts();
-  return posts.filter(post => post.tags.includes(tag));
+  return posts.filter((post) => post.tags.includes(tag));
 }

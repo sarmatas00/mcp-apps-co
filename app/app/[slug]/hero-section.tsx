@@ -2,7 +2,16 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Download, Copy, Check, Sparkles, Code, Bird, MessageCircle, ChevronDown } from "lucide-react";
+import {
+  Download,
+  Copy,
+  Check,
+  Sparkles,
+  Code,
+  Bird,
+  MessageCircle,
+  ChevronDown,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +22,12 @@ import {
 import type { AppDetailData } from "./types";
 
 function getClientName(client: string): string {
-  const names: Record<string, string> = { claude: "Claude", chatgpt: "ChatGPT", vscode: "VS Code", goose: "Goose" };
+  const names: Record<string, string> = {
+    claude: "Claude",
+    chatgpt: "ChatGPT",
+    vscode: "VS Code",
+    goose: "Goose",
+  };
   return names[client] || client;
 }
 
@@ -33,18 +47,30 @@ function generateConfig(appSlug: string, client: string): string {
       description: `MCP App: ${appSlug}`,
     },
     vscode: {
-      "mcp.servers": [{ name: appSlug, command: "npx", args: [`@mcp-apps/${appSlug}`] }],
+      "mcp.servers": [
+        { name: appSlug, command: "npx", args: [`@mcp-apps/${appSlug}`] },
+      ],
     },
     goose: {
       extensions: {
-        [appSlug]: { name: appSlug, cmd: "npx", args: [`@mcp-apps/${appSlug}`] },
+        [appSlug]: {
+          name: appSlug,
+          cmd: "npx",
+          args: [`@mcp-apps/${appSlug}`],
+        },
       },
     },
   };
   return JSON.stringify(configs[client] || configs.claude, null, 2);
 }
 
-function ClientBadge({ client, supported }: { client: string; supported: boolean }) {
+function ClientBadge({
+  client,
+  supported,
+}: {
+  client: string;
+  supported: boolean;
+}) {
   const icons: Record<string, React.ReactNode> = {
     claude: <Sparkles className="w-3.5 h-3.5" />,
     chatgpt: <MessageCircle className="w-3.5 h-3.5" />,
@@ -58,12 +84,16 @@ function ClientBadge({ client, supported }: { client: string; supported: boolean
         "inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-medium tracking-wide uppercase border",
         supported
           ? "bg-[#1a1a1a] border-[#444] text-white"
-          : "bg-[#111] border-[#222] text-[#444]"
+          : "bg-[#111] border-[#222] text-[#444]",
       )}
     >
       {icons[client]}
       <span>{getClientName(client)}</span>
-      {supported ? <Check className="w-3 h-3" /> : <span className="text-[8px]">—</span>}
+      {supported ? (
+        <Check className="w-3 h-3" />
+      ) : (
+        <span className="text-[8px]">—</span>
+      )}
     </div>
   );
 }
@@ -75,7 +105,10 @@ function formatInstallCount(count: number): string {
 }
 
 function formatCategory(category: string): string {
-  return category.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  return category
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 }
 
 export function HeroSection({ app }: { app: AppDetailData }) {
@@ -109,7 +142,9 @@ export function HeroSection({ app }: { app: AppDetailData }) {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-start">
           <div className="space-y-6">
             <div className="flex flex-wrap items-center gap-4 text-[11px] tracking-[0.1em] uppercase text-[#666]">
-              <span className="text-[#dc2626]">{formatCategory(app.category)}</span>
+              <span className="text-[#dc2626]">
+                {formatCategory(app.category)}
+              </span>
               <span className="text-[#333]">|</span>
               <div className="flex items-center gap-1.5">
                 <span className="text-white">{app.rating.toFixed(1)}</span>
@@ -125,11 +160,17 @@ export function HeroSection({ app }: { app: AppDetailData }) {
               {app.name}
             </h1>
 
-            <p className="text-lg sm:text-xl text-[#888] max-w-2xl">{app.tagline}</p>
+            <p className="text-lg sm:text-xl text-[#888] max-w-2xl">
+              {app.tagline}
+            </p>
 
             <div className="flex flex-wrap gap-2">
               {Object.entries(app.compatibility).map(([client, supported]) => (
-                <ClientBadge key={client} client={client} supported={supported} />
+                <ClientBadge
+                  key={client}
+                  client={client}
+                  supported={supported}
+                />
               ))}
             </div>
           </div>
@@ -143,7 +184,10 @@ export function HeroSection({ app }: { app: AppDetailData }) {
                   <ChevronDown className="w-4 h-4 ml-2" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[300px] bg-[#1a1a1a] border-[#333] p-4">
+              <DropdownMenuContent
+                align="end"
+                className="w-[300px] bg-[#1a1a1a] border-[#333] p-4"
+              >
                 <div className="space-y-4">
                   <div>
                     <label className="text-[10px] tracking-wide uppercase text-[#666] block mb-2">
@@ -158,7 +202,7 @@ export function HeroSection({ app }: { app: AppDetailData }) {
                             "px-3 py-1.5 text-[10px] font-medium tracking-wide uppercase border transition-colors",
                             selectedClient === client
                               ? "bg-[#dc2626] border-[#dc2626] text-white"
-                              : "bg-[#111] border-[#333] text-[#888] hover:border-[#555]"
+                              : "bg-[#111] border-[#333] text-[#888] hover:border-[#555]",
                           )}
                         >
                           {getClientName(client)}
@@ -176,7 +220,11 @@ export function HeroSection({ app }: { app: AppDetailData }) {
                         onClick={handleCopy}
                         className="text-[10px] text-[#888] hover:text-white flex items-center gap-1"
                       >
-                        {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                        {copied ? (
+                          <Check className="w-3 h-3" />
+                        ) : (
+                          <Copy className="w-3 h-3" />
+                        )}
                         {copied ? "Copied" : "Copy"}
                       </button>
                     </div>

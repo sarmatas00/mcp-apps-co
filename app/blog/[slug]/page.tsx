@@ -1,8 +1,13 @@
-import { getAllPosts, getPostBySlug, getAllCategories, getAllTags } from '@/lib/blog/posts';
-import { MDXRemote } from 'next-mdx-remote/rsc';
-import Link from 'next/link';
-import { format } from 'date-fns';
-import type { Metadata } from 'next';
+import {
+  getAllPosts,
+  getPostBySlug,
+  getAllCategories,
+  getAllTags,
+} from "@/lib/blog/posts";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import Link from "next/link";
+import { format } from "date-fns";
+import type { Metadata } from "next";
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -11,12 +16,16 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
   const post = getPostBySlug(params.slug);
-  
+
   if (!post) {
     return {
-      title: 'Post Not Found',
+      title: "Post Not Found",
     };
   }
 
@@ -26,7 +35,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     openGraph: {
       title: post.metaTitle || post.title,
       description: post.metaDescription || post.excerpt,
-      type: 'article',
+      type: "article",
       publishedTime: post.date,
       authors: [post.author],
     },
@@ -44,8 +53,8 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           <p className="mt-4 text-gray-400">
             The blog post you&apos;re looking for doesn&apos;t exist.
           </p>
-          <Link 
-            href="/blog" 
+          <Link
+            href="/blog"
             className="mt-6 inline-block text-red-500 hover:text-red-400"
           >
             ← Back to Blog
@@ -93,7 +102,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           <span>{post.author}</span>
           <span>·</span>
           <time dateTime={post.date}>
-            {format(new Date(post.date), 'MMMM d, yyyy')}
+            {format(new Date(post.date), "MMMM d, yyyy")}
           </time>
           <span>·</span>
           <span>{post.readTime} min read</span>
@@ -123,8 +132,8 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
         {/* Back to Blog */}
         <div className="mt-12">
-          <Link 
-            href="/blog" 
+          <Link
+            href="/blog"
             className="inline-flex items-center gap-2 text-red-500 hover:text-red-400"
           >
             ← Back to Blog

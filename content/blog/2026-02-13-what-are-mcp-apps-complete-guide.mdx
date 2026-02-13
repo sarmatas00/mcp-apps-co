@@ -19,12 +19,12 @@ If you've been following the AI space, you've probably heard of MCP (Model Conte
 
 Let's clear up the confusion right away:
 
-| Feature | MCP Servers | MCP Apps |
-|---------|-------------|----------|
-| **What they do** | Provide data & tools | Provide interactive UI components |
-| **Output** | Text, JSON, structured data | Dashboards, forms, visualizations |
-| **User interaction** | Through conversation | Direct manipulation (click, type, drag) |
-| **Example** | "What's the weather?" → returns text | "Show me sales data" → renders interactive chart |
+| Feature              | MCP Servers                          | MCP Apps                                         |
+| -------------------- | ------------------------------------ | ------------------------------------------------ |
+| **What they do**     | Provide data & tools                 | Provide interactive UI components                |
+| **Output**           | Text, JSON, structured data          | Dashboards, forms, visualizations                |
+| **User interaction** | Through conversation                 | Direct manipulation (click, type, drag)          |
+| **Example**          | "What's the weather?" → returns text | "Show me sales data" → renders interactive chart |
 
 **MCP Servers** are the backend — they fetch data, run calculations, perform actions.  
 **MCP Apps** are the frontend — they render rich interfaces that users can interact with directly inside their AI conversation.
@@ -34,25 +34,33 @@ Let's clear up the confusion right away:
 MCP Apps enable experiences that plain text can't deliver:
 
 ### 1. Interactive Dashboards
+
 Instead of describing your analytics, render a live dashboard:
+
 - Filter data by date range
 - Click to drill down into specific metrics
 - Export reports without leaving the chat
 
 ### 2. Configuration Wizards
+
 Multi-step setups become guided experiences:
+
 - Forms with conditional fields
 - Real-time validation
 - Visual progress indicators
 
 ### 3. Document Viewers
+
 Review documents with rich annotations:
+
 - PDF viewer with highlighted clauses
 - Click to approve or flag sections
 - Side-by-side comparison mode
 
 ### 4. Real-Time Monitoring
+
 Live data that updates automatically:
+
 - Server health dashboards
 - Stock price tickers
 - IoT device status panels
@@ -81,14 +89,14 @@ The UI runs in a **sandboxed iframe** within your AI client (Claude, ChatGPT, VS
 
 As of February 2026:
 
-| Client | Status | Notes |
-|--------|--------|-------|
-| **Claude** | ✅ Available | Web and desktop |
-| **ChatGPT** | ✅ Rolling out | Check your account |
-| **Goose** | ✅ Available | Block's AI agent |
-| **VS Code Insiders** | ✅ Available | Microsoft's official extension |
-| **JetBrains IDEs** | 🔜 Coming soon | Announced, pending release |
-| **AWS Kiro** | 🔜 Coming soon | In development |
+| Client               | Status         | Notes                          |
+| -------------------- | -------------- | ------------------------------ |
+| **Claude**           | ✅ Available   | Web and desktop                |
+| **ChatGPT**          | ✅ Rolling out | Check your account             |
+| **Goose**            | ✅ Available   | Block's AI agent               |
+| **VS Code Insiders** | ✅ Available   | Microsoft's official extension |
+| **JetBrains IDEs**   | 🔜 Coming soon | Announced, pending release     |
+| **AWS Kiro**         | 🔜 Coming soon | In development                 |
 
 ## Getting Started with MCP Apps
 
@@ -102,6 +110,7 @@ As of February 2026:
 ### For Developers
 
 1. **Install the SDK**:
+
 ```bash
 npm install @modelcontextprotocol/ext-apps
 ```
@@ -113,6 +122,7 @@ npm install @modelcontextprotocol/ext-apps
 4. **Submit** to directories like mcp-apps.co for discovery
 
 Check out the [official examples](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples) for:
+
 - 3D visualization (Three.js)
 - Interactive maps
 - PDF document viewer
@@ -124,6 +134,7 @@ Check out the [official examples](https://github.com/modelcontextprotocol/ext-ap
 The industry is moving toward **agentic AI** — systems that don't just respond to prompts but actively work on your behalf. MCP Apps bridge the gap between what AI can do and what users need to see.
 
 Text is great for explanations. But when you need to:
+
 - Explore a dataset
 - Configure a complex system
 - Monitor real-time changes
@@ -139,4 +150,4 @@ The MCP Apps ecosystem is just getting started. As more clients add support and 
 
 ---
 
-*Have questions? Join the discussion on [GitHub](https://github.com/mcp-apps) or check out our other tutorials.*
+_Have questions? Join the discussion on [GitHub](https://github.com/mcp-apps) or check out our other tutorials._

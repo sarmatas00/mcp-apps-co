@@ -11,7 +11,14 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { Search, Sparkles, Code, MessageCircle, Bird, ArrowRight } from "lucide-react";
+import {
+  Search,
+  Sparkles,
+  Code,
+  MessageCircle,
+  Bird,
+  ArrowRight,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface App {
@@ -139,7 +146,7 @@ export function SearchCommand() {
       (app) =>
         app.name.toLowerCase().includes(lowerQuery) ||
         app.description.toLowerCase().includes(lowerQuery) ||
-        app.category.toLowerCase().includes(lowerQuery)
+        app.category.toLowerCase().includes(lowerQuery),
     );
   }, [query]);
 
@@ -151,7 +158,7 @@ export function SearchCommand() {
         className={cn(
           "flex items-center gap-3 px-4 py-2.5 text-left",
           "bg-[#1a1a1a] border border-[#333] hover:border-[#555]",
-          "transition-colors w-full sm:w-[400px]"
+          "transition-colors w-full sm:w-[400px]",
         )}
       >
         <Search className="w-4 h-4 text-[#666]" />
@@ -223,18 +230,21 @@ export function SearchCommand() {
                       {formatCategory(app.category)}
                     </span>
                   </div>
-                  <p className="text-xs text-[#888] truncate">{app.description}</p>
+                  <p className="text-xs text-[#888] truncate">
+                    {app.description}
+                  </p>
                   <div className="flex items-center gap-1.5 mt-2">
-                    {Object.entries(app.compatibility).map(([client, supported]) =>
-                      supported ? (
-                        <span
-                          key={client}
-                          className="text-[#555]"
-                          title={`Works with ${client}`}
-                        >
-                          {getClientIcon(client)}
-                        </span>
-                      ) : null
+                    {Object.entries(app.compatibility).map(
+                      ([client, supported]) =>
+                        supported ? (
+                          <span
+                            key={client}
+                            className="text-[#555]"
+                            title={`Works with ${client}`}
+                          >
+                            {getClientIcon(client)}
+                          </span>
+                        ) : null,
                     )}
                   </div>
                 </div>

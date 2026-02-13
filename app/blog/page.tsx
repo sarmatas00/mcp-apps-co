@@ -1,11 +1,12 @@
-import { getAllPosts, getAllCategories, getAllTags } from '@/lib/blog/posts';
-import Link from 'next/link';
-import { format } from 'date-fns';
-import type { Metadata } from 'next';
+import { getAllPosts, getAllCategories, getAllTags } from "@/lib/blog/posts";
+import Link from "next/link";
+import { format } from "date-fns";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Blog - MCP Apps',
-  description: 'Tutorials, showcases, and updates about MCP Apps and the AI ecosystem.',
+  title: "Blog - MCP Apps",
+  description:
+    "Tutorials, showcases, and updates about MCP Apps and the AI ecosystem.",
 };
 
 export default function BlogPage() {
@@ -34,7 +35,8 @@ export default function BlogPage() {
             Blog
           </h1>
           <p className="text-xl text-gray-400 max-w-2xl">
-            Tutorials, showcases, and updates about MCP Apps and the AI ecosystem.
+            Tutorials, showcases, and updates about MCP Apps and the AI
+            ecosystem.
           </p>
           <div className="mt-8 h-px bg-[#333] w-full" />
         </div>
@@ -81,29 +83,29 @@ export default function BlogPage() {
                         {post.category}
                       </span>
                     )}
-                    
+
                     {/* Title */}
                     <h2 className="text-2xl md:text-3xl font-bold mb-3 group-hover:text-red-500 transition-colors">
                       {post.title}
                     </h2>
-                    
+
                     {/* Excerpt */}
                     <p className="text-gray-400 text-lg mb-4 line-clamp-2">
                       {post.excerpt}
                     </p>
-                    
+
                     {/* Meta */}
                     <div className="flex items-center gap-3 text-sm text-gray-500">
                       <span>{post.author}</span>
                       <span>·</span>
                       <time dateTime={post.date}>
-                        {format(new Date(post.date), 'MMM d, yyyy')}
+                        {format(new Date(post.date), "MMM d, yyyy")}
                       </time>
                       <span>·</span>
                       <span>{post.readTime} min read</span>
                     </div>
                   </div>
-                  
+
                   {/* Arrow */}
                   <div className="hidden md:flex items-center">
                     <span className="text-2xl text-gray-600 group-hover:text-red-500 group-hover:translate-x-1 transition-all">

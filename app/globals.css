@@ -9,7 +9,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-mono);
-  
+
   /* Swiss Design - Minimal Radius */
   --radius-sm: 0px;
   --radius-md: 2px;
@@ -18,7 +18,7 @@
   --radius-2xl: 2px;
   --radius-3xl: 2px;
   --radius-4xl: 2px;
-  
+
   /* Swiss Color System - Black, White, Red only */
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
@@ -41,7 +41,7 @@
 /* SWISS STUDIO - Off-black foundation with warmth */
 :root {
   --radius: 2px;
-  
+
   /* Core Palette - Brutalist Swiss */
   --background: #111111;
   --foreground: #ffffff;
@@ -49,26 +49,26 @@
   --card-foreground: #ffffff;
   --popover: #111111;
   --popover-foreground: #ffffff;
-  
+
   /* Red accent ONLY for CTAs */
   --primary: #dc2626;
   --primary-foreground: #ffffff;
-  
+
   /* Subtle grays for hierarchy */
   --secondary: #1a1a1a;
   --secondary-foreground: #ffffff;
   --muted: #1a1a1a;
   --muted-foreground: #888888;
-  
+
   /* Thin architectural borders */
   --border: #333333;
   --input: #333333;
   --ring: #dc2626;
-  
+
   --accent: #dc2626;
   --accent-foreground: #ffffff;
   --destructive: #dc2626;
-  
+
   --popover: #111111;
   --popover-foreground: #ffffff;
 }
@@ -79,39 +79,41 @@
     /* Sharp corners everywhere */
     border-radius: 0 !important;
   }
-  
+
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  
+
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "kern" 1, "liga" 1;
+    font-feature-settings:
+      "kern" 1,
+      "liga" 1;
     letter-spacing: -0.02em;
   }
-  
+
   /* Selection - Red accent */
   ::selection {
     background: #dc2626;
     color: #ffffff;
   }
-  
+
   /* Scrollbar - Minimal */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
-  
+
   ::-webkit-scrollbar-track {
     background: #111111;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     background: #333333;
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
     background: #444444;
   }
@@ -125,50 +127,52 @@
     line-height: 0.9;
     text-transform: uppercase;
   }
-  
+
   .swiss-heading {
     font-weight: 700;
     letter-spacing: -0.03em;
     line-height: 1;
   }
-  
+
   .swiss-body {
     font-weight: 400;
     letter-spacing: -0.01em;
     line-height: 1.5;
   }
-  
+
   .swiss-label {
     font-weight: 500;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     font-size: 0.75rem;
   }
-  
+
   /* Architectural borders */
   .border-thin {
     border-width: 1px;
   }
-  
+
   .border-architectural {
     border-width: 1px;
     border-color: #333333;
   }
-  
+
   /* Red accent utility */
   .accent-red {
     color: #dc2626;
   }
-  
+
   .bg-accent-red {
     background-color: #dc2626;
   }
-  
+
   /* Hover lift effect */
   .hover-lift {
-    transition: transform 0.2s ease, border-color 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease;
   }
-  
+
   .hover-lift:hover {
     transform: translateY(-2px);
     border-color: #444444;

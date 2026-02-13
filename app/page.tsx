@@ -8,8 +8,10 @@ const sampleApps: AppData[] = [
   {
     id: "1",
     name: "Interactive Charts",
-    description: "Beautiful data visualizations and charts that render directly in your AI conversations. Supports line, bar, pie charts and more.",
-    screenshotUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=500&fit=crop",
+    description:
+      "Beautiful data visualizations and charts that render directly in your AI conversations. Supports line, bar, pie charts and more.",
+    screenshotUrl:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=500&fit=crop",
     category: "data-visualization",
     rating: 4.8,
     installCount: 12500,
@@ -24,8 +26,10 @@ const sampleApps: AppData[] = [
   {
     id: "2",
     name: "Code Review Assistant",
-    description: "Get intelligent code reviews with inline comments, suggestions, and visual diff rendering.",
-    screenshotUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=500&fit=crop",
+    description:
+      "Get intelligent code reviews with inline comments, suggestions, and visual diff rendering.",
+    screenshotUrl:
+      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=500&fit=crop",
     category: "developer-tools",
     rating: 4.9,
     installCount: 8750,
@@ -40,8 +44,10 @@ const sampleApps: AppData[] = [
   {
     id: "3",
     name: "Mind Map Canvas",
-    description: "Create and collaborate on mind maps, flowcharts, and diagrams with an intuitive drag-and-drop interface.",
-    screenshotUrl: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=800&h=500&fit=crop",
+    description:
+      "Create and collaborate on mind maps, flowcharts, and diagrams with an intuitive drag-and-drop interface.",
+    screenshotUrl:
+      "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=800&h=500&fit=crop",
     category: "productivity",
     rating: 4.6,
     installCount: 5400,
@@ -56,8 +62,10 @@ const sampleApps: AppData[] = [
   {
     id: "4",
     name: "SQL Query Builder",
-    description: "Visual SQL query builder with schema exploration, query preview, and result rendering.",
-    screenshotUrl: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&h=500&fit=crop",
+    description:
+      "Visual SQL query builder with schema exploration, query preview, and result rendering.",
+    screenshotUrl:
+      "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&h=500&fit=crop",
     category: "developer-tools",
     rating: 4.7,
     installCount: 3200,
@@ -72,8 +80,10 @@ const sampleApps: AppData[] = [
   {
     id: "5",
     name: "Markdown Preview Pro",
-    description: "Advanced markdown renderer with support for diagrams, math equations, and custom themes.",
-    screenshotUrl: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=500&fit=crop",
+    description:
+      "Advanced markdown renderer with support for diagrams, math equations, and custom themes.",
+    screenshotUrl:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=500&fit=crop",
     category: "productivity",
     rating: 4.5,
     installCount: 8900,
@@ -88,8 +98,10 @@ const sampleApps: AppData[] = [
   {
     id: "6",
     name: "API Tester",
-    description: "Test and debug APIs with a beautiful interface. Send requests, inspect responses, and save collections.",
-    screenshotUrl: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&h=500&fit=crop",
+    description:
+      "Test and debug APIs with a beautiful interface. Send requests, inspect responses, and save collections.",
+    screenshotUrl:
+      "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&h=500&fit=crop",
     category: "developer-tools",
     rating: 4.4,
     installCount: 2100,
@@ -109,13 +121,15 @@ export default function Home() {
       {/* Architectural Grid Lines - Top */}
       <div className="fixed top-0 left-0 right-0 h-px bg-[#333] z-50" />
       <div className="fixed top-0 bottom-0 left-[50%] w-px bg-[#333] z-40 hidden lg:block" />
-      
+
       {/* Navigation - Minimal with Search */}
       <nav className="border-b border-[#333]">
         <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12">
           <div className="flex h-16 items-center justify-between gap-4">
             <div className="flex items-center gap-4 flex-shrink-0">
-              <span className="text-xs font-medium tracking-[0.2em] uppercase text-[#666]">MCP</span>
+              <span className="text-xs font-medium tracking-[0.2em] uppercase text-[#666]">
+                MCP
+              </span>
               <span className="text-sm font-semibold tracking-tight">APPS</span>
             </div>
             <div className="flex-1 max-w-md hidden sm:block">
@@ -130,7 +144,7 @@ export default function Home() {
           </div>
         </div>
       </nav>
-      
+
       {/* Mobile Search - Visible only on small screens */}
       <div className="sm:hidden border-b border-[#333] px-6 py-3">
         <SearchCommand />
@@ -151,30 +165,32 @@ export default function Home() {
                     </span>
                     <div className="h-px flex-1 bg-[#333]" />
                   </div>
-                  
+
                   {/* Massive Headline */}
                   <h1 className="text-[clamp(3rem,12vw,9rem)] font-black leading-[0.85] tracking-[-0.04em] uppercase">
                     MCP
                     <br />
                     <span className="text-[#666]">APPS</span>
                   </h1>
-                  
+
                   {/* Subhead */}
                   <p className="text-lg sm:text-xl text-[#888] max-w-md leading-relaxed tracking-tight">
-                    Curated interactive UI components for AI. 
-                    Built for Claude, ChatGPT, VS Code, and more.
+                    Curated interactive UI components for AI. Built for Claude,
+                    ChatGPT, VS Code, and more.
                   </p>
-                  
+
                   {/* CTA - Red Accent */}
                   <div className="pt-4">
                     <button className="group inline-flex items-center gap-4 bg-[#dc2626] text-white px-8 py-4 text-sm font-semibold tracking-[0.05em] uppercase hover:bg-[#b91c1c] transition-colors">
                       <span>Browse Collection</span>
-                      <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
+                      <span className="text-lg group-hover:translate-x-1 transition-transform">
+                        →
+                      </span>
                     </button>
                   </div>
                 </div>
               </div>
-              
+
               {/* Right Column - Architectural Stats */}
               <div className="flex flex-col justify-between py-16 lg:py-24 lg:pl-12 border-t lg:border-t-0 border-[#333]">
                 {/* Stats Grid */}
@@ -212,7 +228,7 @@ export default function Home() {
                     </p>
                   </div>
                 </div>
-                
+
                 {/* Bottom Quote */}
                 <div className="pt-12 lg:pt-0">
                   <p className="text-xs font-medium tracking-[0.1em] uppercase text-[#444] max-w-xs">
@@ -234,7 +250,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-16 pb-8 border-b border-[#333]">
               <div>
                 <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-[#666] block mb-2">
-              Featured
+                  Featured
                 </span>
                 <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-[-0.03em] uppercase">
                   COLLECTION
@@ -247,7 +263,7 @@ export default function Home() {
                 <div className="w-12 h-px bg-[#333]" />
               </div>
             </div>
-            
+
             {/* App Grid */}
             <AppGrid>
               {sampleApps.map((app) => (
@@ -275,7 +291,8 @@ export default function Home() {
                   DIRECTORY
                 </h3>
                 <p className="text-[#888] max-w-md mb-8">
-                  Have you built an MCP App? Submit it to our curated directory and reach thousands of developers.
+                  Have you built an MCP App? Submit it to our curated directory
+                  and reach thousands of developers.
                 </p>
                 <button className="inline-flex items-center gap-4 border border-[#333] text-white px-6 py-3 text-xs font-semibold tracking-[0.1em] uppercase hover:bg-white hover:text-black transition-colors">
                   <span>Get Started</span>
@@ -286,19 +303,27 @@ export default function Home() {
                 <div className="grid grid-cols-2 gap-8 w-full">
                   <div className="border-l-2 border-[#dc2626] pl-4">
                     <span className="text-2xl font-black">MIT</span>
-                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">License</p>
+                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">
+                      License
+                    </p>
                   </div>
                   <div className="border-l-2 border-[#333] pl-4">
                     <span className="text-2xl font-black">Open</span>
-                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">Source</p>
+                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">
+                      Source
+                    </p>
                   </div>
                   <div className="border-l-2 border-[#333] pl-4">
                     <span className="text-2xl font-black">Curated</span>
-                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">Quality</p>
+                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">
+                      Quality
+                    </p>
                   </div>
                   <div className="border-l-2 border-[#333] pl-4">
                     <span className="text-2xl font-black">Global</span>
-                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">Community</p>
+                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">
+                      Community
+                    </p>
                   </div>
                 </div>
               </div>
@@ -320,13 +345,22 @@ export default function Home() {
                 </span>
               </div>
               <div className="flex items-center gap-8">
-                <a href="#" className="text-[10px] tracking-[0.15em] uppercase text-[#555] hover:text-white transition-colors">
+                <a
+                  href="#"
+                  className="text-[10px] tracking-[0.15em] uppercase text-[#555] hover:text-white transition-colors"
+                >
                   GitHub
                 </a>
-                <a href="#" className="text-[10px] tracking-[0.15em] uppercase text-[#555] hover:text-white transition-colors">
+                <a
+                  href="#"
+                  className="text-[10px] tracking-[0.15em] uppercase text-[#555] hover:text-white transition-colors"
+                >
                   Docs
                 </a>
-                <a href="#" className="text-[10px] tracking-[0.15em] uppercase text-[#555] hover:text-white transition-colors">
+                <a
+                  href="#"
+                  className="text-[10px] tracking-[0.15em] uppercase text-[#555] hover:text-white transition-colors"
+                >
                   Contact
                 </a>
               </div>

@@ -1,6 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Star, Github, Globe, Terminal, Bird, Sparkles, Code, MessageCircle } from "lucide-react";
+import {
+  Star,
+  Github,
+  Globe,
+  Terminal,
+  Bird,
+  Sparkles,
+  Code,
+  MessageCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeroSection } from "./hero-section";
 import type { AppDetailData } from "./types";
@@ -11,9 +20,12 @@ const sampleApps: AppDetailData[] = [
     id: "1",
     slug: "interactive-charts",
     name: "Interactive Charts",
-    tagline: "Beautiful data visualizations that render directly in AI conversations",
-    description: "Beautiful data visualizations and charts that render directly in your AI conversations.",
-    fullDescription: "Interactive Charts brings the power of data visualization to your AI assistant. Create stunning, interactive charts directly within your conversations without leaving the chat interface. Whether you're analyzing sales data, tracking project metrics, or presenting research findings, Interactive Charts makes it effortless to transform raw data into compelling visual stories.",
+    tagline:
+      "Beautiful data visualizations that render directly in AI conversations",
+    description:
+      "Beautiful data visualizations and charts that render directly in your AI conversations.",
+    fullDescription:
+      "Interactive Charts brings the power of data visualization to your AI assistant. Create stunning, interactive charts directly within your conversations without leaving the chat interface. Whether you're analyzing sales data, tracking project metrics, or presenting research findings, Interactive Charts makes it effortless to transform raw data into compelling visual stories.",
     features: [
       "Line, bar, pie, and scatter chart types",
       "Real-time data updates",
@@ -38,7 +50,8 @@ const sampleApps: AppDetailData[] = [
     installCount: 12500,
     author: {
       name: "datawiz",
-      avatarUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
       github: "https://github.com/datawiz",
       website: "https://datawiz.io",
       bio: "Data visualization enthusiast",
@@ -74,7 +87,8 @@ const sampleApps: AppDetailData[] = [
         id: "2",
         slug: "sql-query-builder",
         name: "SQL Query Builder",
-        screenshotUrl: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=400&h=250&fit=crop",
+        screenshotUrl:
+          "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=400&h=250&fit=crop",
         category: "developer-tools",
         rating: 4.7,
       },
@@ -104,7 +118,13 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-function ClientBadge({ client, supported }: { client: string; supported: boolean }) {
+function ClientBadge({
+  client,
+  supported,
+}: {
+  client: string;
+  supported: boolean;
+}) {
   const icons: Record<string, React.ReactNode> = {
     claude: <Sparkles className="w-3.5 h-3.5" />,
     chatgpt: <MessageCircle className="w-3.5 h-3.5" />,
@@ -127,10 +147,17 @@ function ClientBadge({ client, supported }: { client: string; supported: boolean
 }
 
 function formatCategory(category: string): string {
-  return category.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  return category
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 }
 
-export default function AppDetailPage({ params }: { params: { slug: string } }) {
+export default function AppDetailPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const app = sampleApps.find((a) => a.slug === params.slug) || sampleApps[0];
 
   return (
@@ -138,9 +165,16 @@ export default function AppDetailPage({ params }: { params: { slug: string } }) 
       <header className="border-b border-[#333]">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12 py-4">
           <nav className="flex items-center gap-8">
-            <Link href="/" className="text-xl font-bold tracking-tight">MCP Apps</Link>
+            <Link href="/" className="text-xl font-bold tracking-tight">
+              MCP Apps
+            </Link>
             <span className="text-[#333]">/</span>
-            <Link href="/" className="text-[#666] hover:text-white transition-colors">Apps</Link>
+            <Link
+              href="/"
+              className="text-[#666] hover:text-white transition-colors"
+            >
+              Apps
+            </Link>
             <span className="text-[#333]">/</span>
             <span className="text-white">{app.name}</span>
           </nav>
@@ -154,7 +188,9 @@ export default function AppDetailPage({ params }: { params: { slug: string } }) 
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-12 lg:gap-16">
               <div>
-                <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-4">About</span>
+                <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-4">
+                  About
+                </span>
                 <div className="space-y-4 text-[#aaa] leading-relaxed">
                   {app.fullDescription.split("\n\n").map((para, i) => (
                     <p key={i}>{para}</p>
@@ -164,7 +200,9 @@ export default function AppDetailPage({ params }: { params: { slug: string } }) 
 
               <div className="space-y-10">
                 <div>
-                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-4">Features</span>
+                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-4">
+                    Features
+                  </span>
                   <ul className="space-y-3">
                     {app.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-3">
@@ -176,7 +214,9 @@ export default function AppDetailPage({ params }: { params: { slug: string } }) 
                 </div>
 
                 <div>
-                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-4">Use Cases</span>
+                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-4">
+                    Use Cases
+                  </span>
                   <ul className="space-y-3">
                     {app.useCases.map((useCase, i) => (
                       <li key={i} className="flex items-start gap-3">
@@ -195,11 +235,17 @@ export default function AppDetailPage({ params }: { params: { slug: string } }) 
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-2">Reviews</span>
+                <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-2">
+                  Reviews
+                </span>
                 <div className="flex items-center gap-3">
                   <StarRating rating={app.rating} />
-                  <span className="text-2xl font-bold">{app.rating.toFixed(1)}</span>
-                  <span className="text-[#666]">({app.reviewCount} reviews)</span>
+                  <span className="text-2xl font-bold">
+                    {app.rating.toFixed(1)}
+                  </span>
+                  <span className="text-[#666]">
+                    ({app.reviewCount} reviews)
+                  </span>
                 </div>
               </div>
               <Button className="bg-transparent border border-[#333] hover:border-[#dc2626] text-white h-10 px-6 text-sm">
@@ -214,7 +260,9 @@ export default function AppDetailPage({ params }: { params: { slug: string } }) 
                     <StarRating rating={review.rating} />
                     <ClientBadge client={review.clientUsed} supported={true} />
                   </div>
-                  <p className="text-sm text-[#aaa] mb-4 leading-relaxed">{review.content}</p>
+                  <p className="text-sm text-[#aaa] mb-4 leading-relaxed">
+                    {review.content}
+                  </p>
                   <div className="flex items-center justify-between text-[11px] text-[#666]">
                     <span>@{review.author}</span>
                     <span>{review.date}</span>
@@ -227,25 +275,47 @@ export default function AppDetailPage({ params }: { params: { slug: string } }) 
 
         <section className="py-12 lg:py-16 border-b border-[#333]">
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-            <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-8">Developer</span>
+            <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-8">
+              Developer
+            </span>
             <div className="flex items-start gap-6">
               <div className="w-16 h-16 bg-[#1a1a1a] border border-[#333] overflow-hidden">
                 {app.author.avatarUrl && (
-                  <Image src={app.author.avatarUrl} alt={app.author.name} width={64} height={64} className="object-cover" />
+                  <Image
+                    src={app.author.avatarUrl}
+                    alt={app.author.name}
+                    width={64}
+                    height={64}
+                    className="object-cover"
+                  />
                 )}
               </div>
               <div className="flex-1">
                 <h3 className="text-xl font-bold mb-1">{app.author.name}</h3>
-                {app.author.bio && <p className="text-sm text-[#888] mb-4">{app.author.bio}</p>}
+                {app.author.bio && (
+                  <p className="text-sm text-[#888] mb-4">{app.author.bio}</p>
+                )}
                 <div className="flex items-center gap-4">
                   {app.author.github && (
-                    <a href={app.author.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-[#888] hover:text-white transition-colors">
-                      <Github className="w-4 h-4" />GitHub
+                    <a
+                      href={app.author.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-sm text-[#888] hover:text-white transition-colors"
+                    >
+                      <Github className="w-4 h-4" />
+                      GitHub
                     </a>
                   )}
                   {app.author.website && (
-                    <a href={app.author.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-[#888] hover:text-white transition-colors">
-                      <Globe className="w-4 h-4" />Website
+                    <a
+                      href={app.author.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-sm text-[#888] hover:text-white transition-colors"
+                    >
+                      <Globe className="w-4 h-4" />
+                      Website
                     </a>
                   )}
                 </div>
@@ -256,7 +326,9 @@ export default function AppDetailPage({ params }: { params: { slug: string } }) 
 
         <section className="py-12 lg:py-16">
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-            <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-8">Related Apps</span>
+            <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-8">
+              Related Apps
+            </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {app.relatedApps.map((relatedApp) => (
                 <Link
@@ -265,17 +337,28 @@ export default function AppDetailPage({ params }: { params: { slug: string } }) 
                   className="group border border-[#333] hover:border-[#dc2626] transition-colors"
                 >
                   <div className="relative aspect-[16/10] bg-[#0a0a0a] overflow-hidden">
-                    <Image src={relatedApp.screenshotUrl} alt={relatedApp.name} fill className="object-cover" />
+                    <Image
+                      src={relatedApp.screenshotUrl}
+                      alt={relatedApp.name}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                   <div className="p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] tracking-wide uppercase text-[#dc2626]">{formatCategory(relatedApp.category)}</span>
+                      <span className="text-[10px] tracking-wide uppercase text-[#dc2626]">
+                        {formatCategory(relatedApp.category)}
+                      </span>
                       <div className="flex items-center gap-1">
                         <Star className="w-3 h-3 text-white fill-white" />
-                        <span className="text-xs">{relatedApp.rating.toFixed(1)}</span>
+                        <span className="text-xs">
+                          {relatedApp.rating.toFixed(1)}
+                        </span>
                       </div>
                     </div>
-                    <h4 className="font-semibold group-hover:text-[#dc2626] transition-colors">{relatedApp.name}</h4>
+                    <h4 className="font-semibold group-hover:text-[#dc2626] transition-colors">
+                      {relatedApp.name}
+                    </h4>
                   </div>
                 </Link>
               ))}
