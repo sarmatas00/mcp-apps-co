@@ -42,7 +42,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         <div className="mx-auto max-w-3xl px-6 py-24">
           <h1 className="text-4xl font-bold">Post Not Found</h1>
           <p className="mt-4 text-gray-400">
-            The blog post you're looking for doesn't exist.
+            The blog post you&apos;re looking for doesn&apos;t exist.
           </p>
           <Link 
             href="/blog" 

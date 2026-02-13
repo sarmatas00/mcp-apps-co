@@ -207,7 +207,7 @@ export default function Home() {
                 {/* Bottom Quote */}
                 <div className="pt-12 lg:pt-0">
                   <p className="text-xs font-medium tracking-[0.1em] uppercase text-[#444] max-w-xs">
-                    "Good design is as little design as possible."
+                    &quot;Good design is as little design as possible.&quot;
                   </p>
                   <p className="text-[10px] tracking-[0.15em] uppercase text-[#333] mt-2">
                     — Dieter Rams
