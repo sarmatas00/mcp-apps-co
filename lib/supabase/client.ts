@@ -6,7 +6,7 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   throw new Error(
-    "Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY"
+    "Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
   );
 }
 
@@ -16,11 +16,13 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
 export async function getApps() {
   const { data, error } = await supabase
     .from("apps")
-    .select(`
+    .select(
+      `
       *,
       developer:developer_id (name, avatar_url),
       category:category_id (name, slug)
-    `)
+    `,
+    )
     .eq("is_published", true)
     .order("is_featured", { ascending: false })
     .order("install_count", { ascending: false });
@@ -36,11 +38,13 @@ export async function getApps() {
 export async function getAppBySlug(slug: string) {
   const { data, error } = await supabase
     .from("apps")
-    .select(`
+    .select(
+      `
       *,
       developer:developer_id (*),
       category:category_id (name, slug)
-    `)
+    `,
+    )
     .eq("slug", slug)
     .eq("is_published", true)
     .single();
@@ -56,11 +60,13 @@ export async function getAppBySlug(slug: string) {
 export async function getAppsByCategory(categorySlug: string) {
   const { data, error } = await supabase
     .from("apps")
-    .select(`
+    .select(
+      `
       *,
       developer:developer_id (name, avatar_url),
       category:category_id (name, slug)
-    `)
+    `,
+    )
     .eq("is_published", true)
     .eq("category.slug", categorySlug)
     .order("install_count", { ascending: false });
@@ -97,7 +103,7 @@ export async function getCategories() {
         ...category,
         count: countError ? 0 : count || 0,
       };
-    })
+    }),
   );
 
   return categoriesWithCounts;
@@ -118,14 +124,20 @@ export async function getCategoryBySlug(slug: string) {
   return data;
 }
 
-export async function getRelatedApps(appId: string, categoryId: string, limit: number = 3) {
+export async function getRelatedApps(
+  appId: string,
+  categoryId: string,
+  limit: number = 3,
+) {
   const { data, error } = await supabase
     .from("apps")
-    .select(`
+    .select(
+      `
       *,
       developer:developer_id (name, avatar_url),
       category:category_id (name, slug)
-    `)
+    `,
+    )
     .eq("is_published", true)
     .eq("category_id", categoryId)
     .neq("id", appId)
@@ -157,13 +169,17 @@ export async function getReviewsByAppId(appId: string) {
 export async function searchApps(query: string) {
   const { data, error } = await supabase
     .from("apps")
-    .select(`
+    .select(
+      `
       *,
       developer:developer_id (name, avatar_url),
       category:category_id (name, slug)
-    `)
+    `,
+    )
     .eq("is_published", true)
-    .or(`name.ilike.%${query}%,description.ilike.%${query}%,tagline.ilike.%${query}%`)
+    .or(
+      `name.ilike.%${query}%,description.ilike.%${query}%,tagline.ilike.%${query}%`,
+    )
     .limit(20);
 
   if (error) {
