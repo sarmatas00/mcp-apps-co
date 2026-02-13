@@ -1,6 +1,7 @@
 "use client";
 
 import { AppCard, AppGrid, type AppData } from "@/components/app-card";
+import { SearchCommand } from "@/components/search-command";
 
 // Sample MCP Apps data
 const sampleApps: AppData[] = [
@@ -109,16 +110,19 @@ export default function Home() {
       <div className="fixed top-0 left-0 right-0 h-px bg-[#333] z-50" />
       <div className="fixed top-0 bottom-0 left-[50%] w-px bg-[#333] z-40 hidden lg:block" />
       
-      {/* Navigation - Minimal */}
+      {/* Navigation - Minimal with Search */}
       <nav className="border-b border-[#333]">
         <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex h-16 items-center justify-between gap-4">
+            <div className="flex items-center gap-4 flex-shrink-0">
               <span className="text-xs font-medium tracking-[0.2em] uppercase text-[#666]">MCP</span>
               <span className="text-sm font-semibold tracking-tight">APPS</span>
             </div>
-            <div className="flex items-center gap-8">
-              <span className="text-xs font-medium tracking-[0.1em] uppercase text-[#666] hidden sm:inline">
+            <div className="flex-1 max-w-md hidden sm:block">
+              <SearchCommand />
+            </div>
+            <div className="flex items-center gap-8 flex-shrink-0">
+              <span className="text-xs font-medium tracking-[0.1em] uppercase text-[#666] hidden lg:inline">
                 Swiss Studio
               </span>
               <div className="w-2 h-2 bg-[#dc2626]" />
@@ -126,6 +130,11 @@ export default function Home() {
           </div>
         </div>
       </nav>
+      
+      {/* Mobile Search - Visible only on small screens */}
+      <div className="sm:hidden border-b border-[#333] px-6 py-3">
+        <SearchCommand />
+      </div>
 
       <main>
         {/* Hero Section - Broken Grid, Massive Typography */}
