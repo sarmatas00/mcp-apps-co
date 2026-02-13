@@ -249,7 +249,11 @@ export default function Home() {
           <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12 py-6">
             <CategoryFilter
               categories={[
-                { id: "data-visualization", name: "Data Visualization", count: 12 },
+                {
+                  id: "data-visualization",
+                  name: "Data Visualization",
+                  count: 12,
+                },
                 { id: "developer-tools", name: "Developer Tools", count: 24 },
                 { id: "productivity", name: "Productivity", count: 18 },
                 { id: "communication", name: "Communication", count: 8 },

@@ -19,8 +19,10 @@ const allApps: AppData[] = [
   {
     id: "1",
     name: "Interactive Charts",
-    description: "Beautiful data visualizations and charts that render directly in your AI conversations.",
-    screenshotUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=500&fit=crop",
+    description:
+      "Beautiful data visualizations and charts that render directly in your AI conversations.",
+    screenshotUrl:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=500&fit=crop",
     category: "data-visualization",
     rating: 4.8,
     installCount: 12500,
@@ -30,8 +32,10 @@ const allApps: AppData[] = [
   {
     id: "2",
     name: "Code Review Assistant",
-    description: "Get intelligent code reviews with inline comments, suggestions, and visual diff rendering.",
-    screenshotUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=500&fit=crop",
+    description:
+      "Get intelligent code reviews with inline comments, suggestions, and visual diff rendering.",
+    screenshotUrl:
+      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=500&fit=crop",
     category: "developer-tools",
     rating: 4.9,
     installCount: 8750,
@@ -41,8 +45,10 @@ const allApps: AppData[] = [
   {
     id: "3",
     name: "Mind Map Canvas",
-    description: "Create and collaborate on mind maps, flowcharts, and diagrams with an intuitive drag-and-drop interface.",
-    screenshotUrl: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=800&h=500&fit=crop",
+    description:
+      "Create and collaborate on mind maps, flowcharts, and diagrams with an intuitive drag-and-drop interface.",
+    screenshotUrl:
+      "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=800&h=500&fit=crop",
     category: "productivity",
     rating: 4.6,
     installCount: 5400,
@@ -52,8 +58,10 @@ const allApps: AppData[] = [
   {
     id: "4",
     name: "SQL Query Builder",
-    description: "Visual SQL query builder with schema explorer and query optimization suggestions.",
-    screenshotUrl: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&h=500&fit=crop",
+    description:
+      "Visual SQL query builder with schema explorer and query optimization suggestions.",
+    screenshotUrl:
+      "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&h=500&fit=crop",
     category: "developer-tools",
     rating: 4.7,
     installCount: 9200,
@@ -63,8 +71,10 @@ const allApps: AppData[] = [
   {
     id: "5",
     name: "Markdown Preview Pro",
-    description: "Advanced markdown renderer with syntax highlighting, math support, and custom themes.",
-    screenshotUrl: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=500&fit=crop",
+    description:
+      "Advanced markdown renderer with syntax highlighting, math support, and custom themes.",
+    screenshotUrl:
+      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=500&fit=crop",
     category: "productivity",
     rating: 4.5,
     installCount: 6800,
@@ -74,8 +84,10 @@ const allApps: AppData[] = [
   {
     id: "6",
     name: "API Tester",
-    description: "Test and debug APIs with request history, environment variables, and response visualization.",
-    screenshotUrl: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&h=500&fit=crop",
+    description:
+      "Test and debug APIs with request history, environment variables, and response visualization.",
+    screenshotUrl:
+      "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&h=500&fit=crop",
     category: "developer-tools",
     rating: 4.4,
     installCount: 4300,
@@ -93,7 +105,13 @@ export function generateStaticParams() {
 
 function formatCategoryName(slug: string): string {
   const category = categories.find((c) => c.id === slug);
-  return category?.name || slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  return (
+    category?.name ||
+    slug
+      .split("-")
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(" ")
+  );
 }
 
 export default function CategoryPage({ params }: { params: { slug: string } }) {
@@ -107,7 +125,10 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
         <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12">
           <div className="flex h-16 items-center justify-between gap-4">
             <div className="flex items-center gap-4 flex-shrink-0">
-              <Link href="/" className="text-xs font-medium tracking-[0.2em] uppercase text-[#666]">
+              <Link
+                href="/"
+                className="text-xs font-medium tracking-[0.2em] uppercase text-[#666]"
+              >
                 MCP
               </Link>
               <span className="text-sm font-semibold tracking-tight">APPS</span>
@@ -136,7 +157,10 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
           <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
             {/* Breadcrumb */}
             <div className="flex items-center gap-4 mb-8 text-[11px] tracking-[0.1em] uppercase text-[#666]">
-              <Link href="/" className="flex items-center gap-2 hover:text-white transition-colors">
+              <Link
+                href="/"
+                className="flex items-center gap-2 hover:text-white transition-colors"
+              >
                 <ArrowLeft className="w-3 h-3" />
                 All Apps
               </Link>
@@ -154,7 +178,8 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
                   {categoryName}
                 </h1>
                 <p className="mt-4 text-lg text-[#888] max-w-2xl">
-                  {categoryApps.length} app{categoryApps.length !== 1 ? "s" : ""} in this category.
+                  {categoryApps.length} app
+                  {categoryApps.length !== 1 ? "s" : ""} in this category.
                   Browse tools to enhance your AI workflow.
                 </p>
               </div>
@@ -162,8 +187,12 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
               {/* Stats */}
               <div className="flex items-center gap-8 text-right">
                 <div>
-                  <span className="text-3xl font-black">{categoryApps.length}</span>
-                  <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">Apps</p>
+                  <span className="text-3xl font-black">
+                    {categoryApps.length}
+                  </span>
+                  <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">
+                    Apps
+                  </p>
                 </div>
               </div>
             </div>
@@ -173,7 +202,10 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
         {/* Filter Bar */}
         <section className="border-b border-[#333] bg-[#0a0a0a]">
           <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12 py-6">
-            <CategoryFilter categories={categories} activeCategory={params.slug} />
+            <CategoryFilter
+              categories={categories}
+              activeCategory={params.slug}
+            />
           </div>
         </section>
 
@@ -188,7 +220,9 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
               </AppGrid>
             ) : (
               <div className="text-center py-24">
-                <p className="text-[#666] text-lg">No apps found in this category yet.</p>
+                <p className="text-[#666] text-lg">
+                  No apps found in this category yet.
+                </p>
                 <Link
                   href="/"
                   className="inline-flex items-center gap-2 mt-6 text-[#dc2626] hover:text-[#b91c1c] transition-colors"
@@ -234,7 +268,9 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
         <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12 py-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <span className="text-xs font-medium tracking-[0.2em] uppercase text-[#666]">MCP</span>
+              <span className="text-xs font-medium tracking-[0.2em] uppercase text-[#666]">
+                MCP
+              </span>
               <span className="text-sm font-semibold tracking-tight">APPS</span>
             </div>
             <span className="text-[10px] tracking-[0.1em] uppercase text-[#444]">

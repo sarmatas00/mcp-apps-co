@@ -8,7 +8,10 @@ interface CategoryFilterProps {
   activeCategory?: string;
 }
 
-export function CategoryFilter({ categories, activeCategory }: CategoryFilterProps) {
+export function CategoryFilter({
+  categories,
+  activeCategory,
+}: CategoryFilterProps) {
   return (
     <div className="flex flex-wrap gap-2">
       <Link
@@ -17,7 +20,7 @@ export function CategoryFilter({ categories, activeCategory }: CategoryFilterPro
           "px-4 py-2 text-[11px] font-medium tracking-[0.1em] uppercase border transition-colors",
           !activeCategory
             ? "bg-[#dc2626] border-[#dc2626] text-white"
-            : "bg-transparent border-[#333] text-[#888] hover:border-[#555] hover:text-white"
+            : "bg-transparent border-[#333] text-[#888] hover:border-[#555] hover:text-white",
         )}
       >
         All
@@ -30,7 +33,7 @@ export function CategoryFilter({ categories, activeCategory }: CategoryFilterPro
             "px-4 py-2 text-[11px] font-medium tracking-[0.1em] uppercase border transition-colors",
             activeCategory === category.id
               ? "bg-[#dc2626] border-[#dc2626] text-white"
-              : "bg-transparent border-[#333] text-[#888] hover:border-[#555] hover:text-white"
+              : "bg-transparent border-[#333] text-[#888] hover:border-[#555] hover:text-white",
           )}
         >
           {category.name}
