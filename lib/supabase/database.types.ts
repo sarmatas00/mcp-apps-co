@@ -6,7 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       apps: {
@@ -42,12 +42,8 @@ export interface Database {
           created_at: string;
           updated_at: string;
         };
-        Insert: {
-          [key: string]: any;
-        };
-        Update: {
-          [key: string]: any;
-        };
+        Insert: Record<string, unknown>;
+        Update: Record<string, unknown>;
       };
       categories: {
         Row: {
@@ -60,12 +56,8 @@ export interface Database {
           sort_order: number;
           created_at: string;
         };
-        Insert: {
-          [key: string]: any;
-        };
-        Update: {
-          [key: string]: any;
-        };
+        Insert: Record<string, unknown>;
+        Update: Record<string, unknown>;
       };
       developers: {
         Row: {
@@ -81,12 +73,8 @@ export interface Database {
           created_at: string;
           updated_at: string;
         };
-        Insert: {
-          [key: string]: any;
-        };
-        Update: {
-          [key: string]: any;
-        };
+        Insert: Record<string, unknown>;
+        Update: Record<string, unknown>;
       };
       reviews: {
         Row: {
@@ -101,13 +89,9 @@ export interface Database {
           created_at: string;
           updated_at: string;
         };
-        Insert: {
-          [key: string]: any;
-        };
-        Update: {
-          [key: string]: any;
-        };
+        Insert: Record<string, unknown>;
+        Update: Record<string, unknown>;
       };
     };
   };
-}
+};
