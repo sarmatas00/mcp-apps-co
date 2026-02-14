@@ -1,24 +1,21 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./database.types";
+import type { App, Category, CategoryWithCount, Review } from "./types";
 
-// Client-side Supabase client (for browser)
-export function getSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error(
-      "Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
-    );
-  }
-
-  return createClient<Database>(supabaseUrl, supabaseKey);
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error(
+    "Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
+  );
 }
 
+export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
+
 // Helper function for server components
-export async function getApps() {
+export async function getApps(): Promise<App[]> {
   try {
-    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from("apps")
       .select(
@@ -37,16 +34,15 @@ export async function getApps() {
       return [];
     }
 
-    return data || [];
+    return (data as App[]) || [];
   } catch (err) {
     console.error("Supabase error:", err);
     return [];
   }
 }
 
-export async function getAppBySlug(slug: string) {
+export async function getAppBySlug(slug: string): Promise<App | null> {
   try {
-    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from("apps")
       .select(
@@ -65,16 +61,24 @@ export async function getAppBySlug(slug: string) {
       return null;
     }
 
-    return data;
+    return data as App;
   } catch (err) {
     console.error("Supabase error:", err);
     return null;
   }
 }
 
-export async function getAppsByCategory(categorySlug: string) {
+export async function getAppsByCategory(categorySlug: string): Promise<App[]> {
   try {
-    const supabase = getSupabaseClient();
+    // First get the category ID
+    const { data: category } = await supabase
+      .from("categories")
+      .select("id")
+      .eq("slug", categorySlug)
+      .single();
+
+    if (!category) return [];
+
     const { data, error } = await supabase
       .from("apps")
       .select(
@@ -85,7 +89,7 @@ export async function getAppsByCategory(categorySlug: string) {
       `,
       )
       .eq("is_published", true)
-      .eq("category.slug", categorySlug)
+      .eq("category_id", category.id)
       .order("install_count", { ascending: false });
 
     if (error) {
@@ -93,16 +97,15 @@ export async function getAppsByCategory(categorySlug: string) {
       return [];
     }
 
-    return data || [];
+    return (data as App[]) || [];
   } catch (err) {
     console.error("Supabase error:", err);
     return [];
   }
 }
 
-export async function getCategories() {
+export async function getCategories(): Promise<CategoryWithCount[]> {
   try {
-    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from("categories")
       .select("*")
@@ -115,20 +118,18 @@ export async function getCategories() {
 
     // Get app counts for each category
     const categoriesWithCounts = await Promise.all(
-      (data || []).map(
-        async (category: { id: string; slug: string; name: string }) => {
-          const { count, error: countError } = await supabase
-            .from("apps")
-            .select("*", { count: "exact", head: true })
-            .eq("category_id", category.id)
-            .eq("is_published", true);
+      (data || []).map(async (category: Category) => {
+        const { count, error: countError } = await supabase
+          .from("apps")
+          .select("*", { count: "exact", head: true })
+          .eq("category_id", category.id)
+          .eq("is_published", true);
 
-          return {
-            ...category,
-            count: countError ? 0 : count || 0,
-          };
-        },
-      ),
+        return {
+          ...category,
+          count: countError ? 0 : count || 0,
+        };
+      }),
     );
 
     return categoriesWithCounts;
@@ -138,9 +139,10 @@ export async function getCategories() {
   }
 }
 
-export async function getCategoryBySlug(slug: string) {
+export async function getCategoryBySlug(
+  slug: string,
+): Promise<Category | null> {
   try {
-    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from("categories")
       .select("*")
@@ -152,7 +154,7 @@ export async function getCategoryBySlug(slug: string) {
       return null;
     }
 
-    return data;
+    return data as Category;
   } catch (err) {
     console.error("Supabase error:", err);
     return null;
@@ -161,11 +163,12 @@ export async function getCategoryBySlug(slug: string) {
 
 export async function getRelatedApps(
   appId: string,
-  categoryId: string,
+  categoryId: string | null,
   limit: number = 3,
-) {
+): Promise<App[]> {
+  if (!categoryId) return [];
+
   try {
-    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from("apps")
       .select(
@@ -185,16 +188,15 @@ export async function getRelatedApps(
       return [];
     }
 
-    return data || [];
+    return (data as App[]) || [];
   } catch (err) {
     console.error("Supabase error:", err);
     return [];
   }
 }
 
-export async function getReviewsByAppId(appId: string) {
+export async function getReviewsByAppId(appId: string): Promise<Review[]> {
   try {
-    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from("reviews")
       .select("*")
@@ -206,16 +208,15 @@ export async function getReviewsByAppId(appId: string) {
       return [];
     }
 
-    return data || [];
+    return (data as Review[]) || [];
   } catch (err) {
     console.error("Supabase error:", err);
     return [];
   }
 }
 
-export async function searchApps(query: string) {
+export async function searchApps(query: string): Promise<App[]> {
   try {
-    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from("apps")
       .select(
@@ -236,7 +237,7 @@ export async function searchApps(query: string) {
       return [];
     }
 
-    return data || [];
+    return (data as App[]) || [];
   } catch (err) {
     console.error("Supabase error:", err);
     return [];

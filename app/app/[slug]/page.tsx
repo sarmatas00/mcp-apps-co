@@ -10,14 +10,11 @@ import {
   Copy,
   Check,
   Github,
-  Globe,
   Sparkles,
   Code,
   Bird,
   MessageCircle,
-  Terminal,
   ChevronDown,
-  ArrowLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -31,37 +28,7 @@ import {
   getRelatedApps,
   getReviewsByAppId,
 } from "@/lib/supabase/client";
-
-interface Review {
-  id: string;
-  author: string;
-  rating: number;
-  date: string;
-  comment: string;
-  client_used: string;
-}
-
-interface AppData {
-  id: string;
-  name: string;
-  slug: string;
-  tagline: string;
-  description: string | null;
-  long_description: string | null;
-  screenshot_urls: string[] | null;
-  rating: number;
-  review_count: number;
-  install_count: number;
-  category_id: string;
-  category: { name: string; slug: string } | null;
-  developer: { name: string; avatar_url: string | null } | null;
-  compatibility_claude: boolean;
-  compatibility_chatgpt: boolean;
-  compatibility_vscode: boolean;
-  compatibility_goose: boolean;
-  github_url: string | null;
-  npm_package: string | null;
-}
+import type { App, Review } from "@/lib/supabase/types";
 
 function getClientName(client: string): string {
   const names: Record<string, string> = {
@@ -183,9 +150,9 @@ export default function AppDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
 
-  const [app, setApp] = React.useState<AppData | null>(null);
+  const [app, setApp] = React.useState<App | null>(null);
   const [reviews, setReviews] = React.useState<Review[]>([]);
-  const [relatedApps, setRelatedApps] = React.useState<AppData[]>([]);
+  const [relatedApps, setRelatedApps] = React.useState<App[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [selectedClient, setSelectedClient] = React.useState<string>("claude");
   const [copied, setCopied] = React.useState(false);
@@ -194,7 +161,7 @@ export default function AppDetailPage() {
     async function fetchData() {
       if (!slug) return;
 
-      const appData = (await getAppBySlug(slug)) as AppData | null;
+      const appData = await getAppBySlug(slug);
       if (appData) {
         setApp(appData);
 
@@ -246,7 +213,7 @@ export default function AppDetailPage() {
     app.compatibility_chatgpt && "chatgpt",
     app.compatibility_vscode && "vscode",
     app.compatibility_goose && "goose",
-  ].filter(Boolean) as string[];
+  ].filter((c): c is string => Boolean(c));
 
   const screenshotUrl =
     app.screenshot_urls?.[0] ||
@@ -479,7 +446,7 @@ export default function AppDetailPage() {
                     <div className="flex items-center justify-between mb-4">
                       <StarRating rating={review.rating} size="sm" />
                       <ClientBadge
-                        client={review.client_used}
+                        client={review.client_used || "claude"}
                         supported={true}
                       />
                     </div>
@@ -487,8 +454,10 @@ export default function AppDetailPage() {
                       {review.comment}
                     </p>
                     <div className="flex items-center justify-between text-[11px] text-[#666]">
-                      <span>@{review.author}</span>
-                      <span>{new Date(review.date).toLocaleDateString()}</span>
+                      <span>@{review.author || "anonymous"}</span>
+                      <span>
+                        {new Date(review.created_at).toLocaleDateString()}
+                      </span>
                     </div>
                   </div>
                 ))}

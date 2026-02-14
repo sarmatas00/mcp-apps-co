@@ -8,40 +8,19 @@ import {
   getCategories,
   getCategoryBySlug,
 } from "@/lib/supabase/client";
+import type { App, Category, CategoryWithCount } from "@/lib/supabase/types";
 import { notFound } from "next/navigation";
 
 // Generate static paths for all categories
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const categories = await getCategories();
   return categories.map((category) => ({
     slug: category.slug,
   }));
 }
 
-interface Category {
-  id: string;
-  slug: string;
-  name: string;
-  description: string | null;
-  count?: number;
-}
-
 // Map database app to AppCard format
-function mapAppToCardFormat(app: {
-  id: string;
-  name: string;
-  description: string | null;
-  screenshot_urls: string[] | null;
-  category: { name: string; slug: string } | null;
-  rating: number;
-  install_count: number;
-  developer: { name: string; avatar_url: string | null } | null;
-  compatibility_claude: boolean;
-  compatibility_chatgpt: boolean;
-  compatibility_vscode: boolean;
-  compatibility_goose: boolean;
-  slug: string;
-}) {
+function mapAppToCardFormat(app: App) {
   return {
     id: app.id,
     name: app.name,
@@ -63,21 +42,19 @@ function mapAppToCardFormat(app: {
   };
 }
 
-export default async function CategoryPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const { slug } = await Promise.resolve(params);
+interface CategoryPageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export default async function CategoryPage({ params }: CategoryPageProps) {
+  const { slug } = await params;
 
   // Fetch category and apps in parallel
-  const [categoryData, apps, allCategories] = await Promise.all([
+  const [category, apps, allCategories] = await Promise.all([
     getCategoryBySlug(slug),
     getAppsByCategory(slug),
     getCategories(),
   ]);
-
-  const category = categoryData as Category | null;
 
   if (!category) {
     notFound();
@@ -85,14 +62,14 @@ export default async function CategoryPage({
 
   const categoryApps = apps.map(mapAppToCardFormat);
 
-  const categoryFilters = allCategories.map((cat) => ({
+  const categoryFilters = allCategories.map((cat: CategoryWithCount) => ({
     id: cat.slug,
     name: cat.name,
     count: cat.count || 0,
   }));
 
   const otherCategories = allCategories
-    .filter((c) => c.slug !== slug)
+    .filter((c: CategoryWithCount) => c.slug !== slug)
     .slice(0, 4);
 
   return (
@@ -221,7 +198,7 @@ export default async function CategoryPage({
                 Browse Other Categories
               </span>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                {otherCategories.map((cat) => (
+                {otherCategories.map((cat: CategoryWithCount) => (
                   <Link
                     key={cat.slug}
                     href={`/category/${cat.slug}`}
