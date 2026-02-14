@@ -138,7 +138,7 @@ INSERT INTO apps (
   ),
 
   -- Notion
-  ('gggggggg-gggg-gggg-gggg-gggggggggggg', 
+  ('33333333-3333-3333-3333-333333333334', 
    'Notion', 'notion',
    'Access and manage Notion workspaces',
    'Read pages, databases, and create content in your Notion workspace.',
@@ -156,7 +156,7 @@ INSERT INTO apps (
   ),
 
   -- Slack
-  ('hhhhhhhh-hhhh-hhhh-hhhh-hhhhhhhhhhhh', 
+  ('55555555-5555-5555-5555-555555555556', 
    'Slack', 'slack',
    'Send messages and interact with Slack workspaces',
    'Send messages to channels, read conversations, and manage your Slack workspace.',
