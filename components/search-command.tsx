@@ -21,18 +21,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { searchApps, getCategories } from "@/lib/supabase/client";
-
-interface App {
-  id: string;
-  slug: string;
-  name: string;
-  description: string | null;
-  category: { name: string; slug: string } | null;
-  compatibility_claude: boolean;
-  compatibility_chatgpt: boolean;
-  compatibility_vscode: boolean;
-  compatibility_goose: boolean;
-}
+import type { App, Category } from "@/lib/supabase/types";
 
 const popularSearches = [
   "filesystem",
@@ -64,9 +53,7 @@ export function SearchCommand() {
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [results, setResults] = React.useState<App[]>([]);
-  const [categories, setCategories] = React.useState<
-    { id: string; name: string; slug: string }[]
-  >([]);
+  const [categories, setCategories] = React.useState<Category[]>([]);
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
