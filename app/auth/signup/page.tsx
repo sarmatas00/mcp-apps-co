@@ -9,7 +9,7 @@ export default function SignUpPage() {
     const password = formData.get("password") as string;
     const name = formData.get("name") as string;
 
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,

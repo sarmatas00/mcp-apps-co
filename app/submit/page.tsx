@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getCategories } from "@/lib/supabase/client";
 
 export default async function SubmitAppPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -17,7 +17,7 @@ export default async function SubmitAppPage() {
   async function submitApp(formData: FormData) {
     "use server";
 
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { session },
     } = await supabase.auth.getSession();
