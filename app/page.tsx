@@ -4,23 +4,10 @@ import { AppCard, AppGrid } from "@/components/app-card";
 import { SearchCommand } from "@/components/search-command";
 import { CategoryFilter } from "@/components/category-filter";
 import { getApps, getCategories } from "@/lib/supabase/client";
+import type { App } from "@/lib/supabase/types";
 
 // Map database app to AppCard format
-function mapAppToCardFormat(app: {
-  id: string;
-  name: string;
-  description: string | null;
-  screenshot_urls: string[] | null;
-  category: { name: string; slug: string } | null;
-  rating: number;
-  install_count: number;
-  developer: { name: string; avatar_url: string | null } | null;
-  compatibility_claude: boolean;
-  compatibility_chatgpt: boolean;
-  compatibility_vscode: boolean;
-  compatibility_goose: boolean;
-  slug: string;
-}) {
+function mapAppToCardFormat(app: App) {
   return {
     id: app.id,
     name: app.name,
