@@ -37,7 +37,7 @@ interface Review {
   author: string;
   rating: number;
   date: string;
-  content: string;
+  comment: string;
   client_used: string;
 }
 
