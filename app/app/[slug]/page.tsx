@@ -194,7 +194,7 @@ export default function AppDetailPage() {
     async function fetchData() {
       if (!slug) return;
 
-      const appData = await getAppBySlug(slug);
+      const appData = (await getAppBySlug(slug)) as AppData | null;
       if (appData) {
         setApp(appData);
 
