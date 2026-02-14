@@ -174,7 +174,7 @@ INSERT INTO apps (
   ),
 
   -- Figma
-  ('iiiiiiii-iiii-iiii-iiii-iiiiiiiiiiii', 
+  ('22222222-2222-2222-2222-222222222223', 
    'Figma', 'figma',
    'Access Figma designs and files',
    'Read Figma files, extract design tokens, and analyze designs.',
@@ -192,7 +192,7 @@ INSERT INTO apps (
   ),
 
   -- Stripe
-  ('jjjjjjjj-jjjj-jjjj-jjjj-jjjjjjjjjjjj', 
+  ('22222222-2222-2222-2222-222222222224', 
    'Stripe', 'stripe',
    'Manage Stripe payments and customers',
    'Query customers, payments, invoices, and manage your Stripe account.',
@@ -210,7 +210,7 @@ INSERT INTO apps (
   ),
 
   -- Supabase
-  ('kkkkkkkk-kkkk-kkkk-kkkk-kkkkkkkkkkkk', 
+  ('22222222-2222-2222-2222-222222222225', 
    'Supabase', 'supabase',
    'Full Supabase integration with Auth, DB, and Storage',
    'Access Supabase databases, manage auth users, and interact with storage.',
@@ -228,7 +228,7 @@ INSERT INTO apps (
   ),
 
   -- Vercel
-  ('llllllll-llll-llll-llll-llllllllllll', 
+  ('22222222-2222-2222-2222-222222222226', 
    'Vercel', 'vercel',
    'Deploy and manage Vercel projects',
    'Deploy projects, manage domains, and view deployments on Vercel.',
@@ -246,7 +246,7 @@ INSERT INTO apps (
   ),
 
   -- Google Calendar
-  ('mmmmmmmm-mmmm-mmmm-mmmm-mmmmmmmmmmmm', 
+  ('22222222-2222-2222-2222-222222222227', 
    'Google Calendar', 'google-calendar',
    'Manage Google Calendar events and schedules',
    'Create events, list calendars, and manage your Google Calendar.',
@@ -264,7 +264,7 @@ INSERT INTO apps (
   ),
 
   -- Puppeteer
-  ('nnnnnnnn-nnnn-nnnn-nnnn-nnnnnnnnnnnn', 
+  ('22222222-2222-2222-2222-222222222228', 
    'Puppeteer', 'puppeteer',
    'Browser automation and web scraping',
    'Automate browser actions, take screenshots, and scrape web content.',
@@ -282,7 +282,7 @@ INSERT INTO apps (
   ),
 
   -- AWS
-  ('oooooooo-oooo-oooo-oooo-oooooooooooo', 
+  ('22222222-2222-2222-2222-222222222229', 
    'AWS', 'aws',
    'Access AWS services and resources',
    'Query EC2 instances, S3 buckets, Lambda functions, and more.',
@@ -300,7 +300,7 @@ INSERT INTO apps (
   ),
 
   -- MongoDB
-  ('pppppppp-pppp-pppp-pppp-pppppppppppp', 
+  ('22222222-2222-2222-2222-22222222222a', 
    'MongoDB', 'mongodb',
    'Query and manage MongoDB databases',
    'Full MongoDB integration for document queries and database management.',
@@ -318,7 +318,7 @@ INSERT INTO apps (
   ),
 
   -- Redis
-  ('qqqqqqqq-qqqq-qqqq-qqqq-qqqqqqqqqqqq', 
+  ('22222222-2222-2222-2222-22222222222b', 
    'Redis', 'redis',
    'Access Redis data structures and commands',
    'Query keys, execute Redis commands, and manage your Redis instance.',
@@ -336,7 +336,7 @@ INSERT INTO apps (
   ),
 
   -- Sequential Thinking
-  ('rrrrrrrr-rrrr-rrrr-rrrr-rrrrrrrrrrrr', 
+  ('22222222-2222-2222-2222-22222222222c', 
    'Sequential Thinking', 'sequential-thinking',
    'Dynamic problem-solving with structured thinking',
    'Break down complex problems with step-by-step structured thinking.',
