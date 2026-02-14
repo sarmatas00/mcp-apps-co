@@ -18,6 +18,14 @@ export async function generateStaticParams() {
   }));
 }
 
+interface Category {
+  id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  count?: number;
+}
+
 // Map database app to AppCard format
 function mapAppToCardFormat(app: {
   id: string;
@@ -63,11 +71,13 @@ export default async function CategoryPage({
   const { slug } = await Promise.resolve(params);
 
   // Fetch category and apps in parallel
-  const [category, apps, allCategories] = await Promise.all([
+  const [categoryData, apps, allCategories] = await Promise.all([
     getCategoryBySlug(slug),
     getAppsByCategory(slug),
     getCategories(),
   ]);
+
+  const category = categoryData as Category | null;
 
   if (!category) {
     notFound();
