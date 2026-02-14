@@ -41,6 +41,28 @@ interface Review {
   client_used: string;
 }
 
+interface AppData {
+  id: string;
+  name: string;
+  slug: string;
+  tagline: string;
+  description: string | null;
+  long_description: string | null;
+  screenshot_urls: string[] | null;
+  rating: number;
+  review_count: number;
+  install_count: number;
+  category_id: string;
+  category: { name: string; slug: string } | null;
+  developer: { name: string; avatar_url: string | null } | null;
+  compatibility_claude: boolean;
+  compatibility_chatgpt: boolean;
+  compatibility_vscode: boolean;
+  compatibility_goose: boolean;
+  github_url: string | null;
+  npm_package: string | null;
+}
+
 function getClientName(client: string): string {
   const names: Record<string, string> = {
     claude: "Claude",
@@ -161,11 +183,9 @@ export default function AppDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
 
-  const [app, setApp] = React.useState<Record<string, unknown> | null>(null);
+  const [app, setApp] = React.useState<AppData | null>(null);
   const [reviews, setReviews] = React.useState<Review[]>([]);
-  const [relatedApps, setRelatedApps] = React.useState<
-    Record<string, unknown>[]
-  >([]);
+  const [relatedApps, setRelatedApps] = React.useState<AppData[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [selectedClient, setSelectedClient] = React.useState<string>("claude");
   const [copied, setCopied] = React.useState(false);
