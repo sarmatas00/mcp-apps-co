@@ -115,7 +115,7 @@ export async function getCategories() {
 
     // Get app counts for each category
     const categoriesWithCounts = await Promise.all(
-      (data || []).map(async (category: { id: string }) => {
+      (data || []).map(async (category: { id: string; slug: string; name: string }) => {
         const { count, error: countError } = await supabase
           .from("apps")
           .select("*", { count: "exact", head: true })
