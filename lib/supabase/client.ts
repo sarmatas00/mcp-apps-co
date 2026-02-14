@@ -71,13 +71,14 @@ export async function getAppBySlug(slug: string): Promise<App | null> {
 export async function getAppsByCategory(categorySlug: string): Promise<App[]> {
   try {
     // First get the category ID
-    const { data: category } = await supabase
+    const { data: categoryData } = await supabase
       .from("categories")
       .select("id")
       .eq("slug", categorySlug)
       .single();
 
-    if (!category) return [];
+    if (!categoryData) return [];
+    const category = categoryData as { id: string };
 
     const { data, error } = await supabase
       .from("apps")
