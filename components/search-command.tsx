@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { searchApps, getCategories } from "@/lib/supabase/client";
-import type { App, Category } from "@/lib/supabase/types";
+import type { App, CategoryWithCount } from "@/lib/supabase/types";
 
 const popularSearches = [
   "filesystem",
@@ -53,7 +53,7 @@ export function SearchCommand() {
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [results, setResults] = React.useState<App[]>([]);
-  const [categories, setCategories] = React.useState<Category[]>([]);
+  const [categories, setCategories] = React.useState<CategoryWithCount[]>([]);
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
