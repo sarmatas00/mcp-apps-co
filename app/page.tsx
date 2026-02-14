@@ -1,122 +1,65 @@
-"use client";
-
-import { AppCard, AppGrid, type AppData } from "@/components/app-card";
+import Image from "next/image";
+import Link from "next/link";
+import { AppCard, AppGrid } from "@/components/app-card";
 import { SearchCommand } from "@/components/search-command";
 import { CategoryFilter } from "@/components/category-filter";
+import { getApps, getCategories } from "@/lib/supabase/client";
 
-// Sample MCP Apps data
-const sampleApps: AppData[] = [
-  {
-    id: "1",
-    name: "Interactive Charts",
-    description:
-      "Beautiful data visualizations and charts that render directly in your AI conversations. Supports line, bar, pie charts and more.",
+// Map database app to AppCard format
+function mapAppToCardFormat(app: {
+  id: string;
+  name: string;
+  description: string | null;
+  screenshot_urls: string[] | null;
+  category: { name: string; slug: string } | null;
+  rating: number;
+  install_count: number;
+  developer: { name: string; avatar_url: string | null } | null;
+  compatibility_claude: boolean;
+  compatibility_chatgpt: boolean;
+  compatibility_vscode: boolean;
+  compatibility_goose: boolean;
+  slug: string;
+}) {
+  return {
+    id: app.id,
+    name: app.name,
+    description: app.description || "",
     screenshotUrl:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=500&fit=crop",
-    category: "data-visualization",
-    rating: 4.8,
-    installCount: 12500,
-    author: { name: "datawiz" },
+      app.screenshot_urls?.[0] ||
+      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=500&fit=crop",
+    category: app.category?.slug || "uncategorized",
+    rating: app.rating,
+    installCount: app.install_count,
+    author: { name: app.developer?.name || "Unknown" },
     compatibility: {
-      claude: true,
-      chatgpt: true,
-      vscode: false,
-      goose: true,
+      claude: app.compatibility_claude,
+      chatgpt: app.compatibility_chatgpt,
+      vscode: app.compatibility_vscode,
+      goose: app.compatibility_goose,
     },
-  },
-  {
-    id: "2",
-    name: "Code Review Assistant",
-    description:
-      "Get intelligent code reviews with inline comments, suggestions, and visual diff rendering.",
-    screenshotUrl:
-      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=500&fit=crop",
-    category: "developer-tools",
-    rating: 4.9,
-    installCount: 8750,
-    author: { name: "devtools" },
-    compatibility: {
-      claude: true,
-      chatgpt: true,
-      vscode: true,
-      goose: true,
-    },
-  },
-  {
-    id: "3",
-    name: "Mind Map Canvas",
-    description:
-      "Create and collaborate on mind maps, flowcharts, and diagrams with an intuitive drag-and-drop interface.",
-    screenshotUrl:
-      "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=800&h=500&fit=crop",
-    category: "productivity",
-    rating: 4.6,
-    installCount: 5400,
-    author: { name: "mapmaster" },
-    compatibility: {
-      claude: true,
-      chatgpt: false,
-      vscode: false,
-      goose: true,
-    },
-  },
-  {
-    id: "4",
-    name: "SQL Query Builder",
-    description:
-      "Visual SQL query builder with schema exploration, query preview, and result rendering.",
-    screenshotUrl:
-      "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&h=500&fit=crop",
-    category: "developer-tools",
-    rating: 4.7,
-    installCount: 3200,
-    author: { name: "sqlexpert" },
-    compatibility: {
-      claude: true,
-      chatgpt: true,
-      vscode: true,
-      goose: false,
-    },
-  },
-  {
-    id: "5",
-    name: "Markdown Preview Pro",
-    description:
-      "Advanced markdown renderer with support for diagrams, math equations, and custom themes.",
-    screenshotUrl:
-      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=500&fit=crop",
-    category: "productivity",
-    rating: 4.5,
-    installCount: 8900,
-    author: { name: "mdmaster" },
-    compatibility: {
-      claude: true,
-      chatgpt: true,
-      vscode: true,
-      goose: true,
-    },
-  },
-  {
-    id: "6",
-    name: "API Tester",
-    description:
-      "Test and debug APIs with a beautiful interface. Send requests, inspect responses, and save collections.",
-    screenshotUrl:
-      "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&h=500&fit=crop",
-    category: "developer-tools",
-    rating: 4.4,
-    installCount: 2100,
-    author: { name: "apiguru" },
-    compatibility: {
-      claude: true,
-      chatgpt: false,
-      vscode: true,
-      goose: false,
-    },
-  },
-];
+    slug: app.slug,
+  };
+}
 
-export default function Home() {
+export default async function Home() {
+  // Fetch data from Supabase
+  const apps = await getApps();
+  const categories = await getCategories();
+
+  // Map categories for the filter
+  const categoryFilters = categories.map((cat) => ({
+    id: cat.slug,
+    name: cat.name,
+    count: cat.count || 0,
+  }));
+
+  // Map apps for the cards
+  const mappedApps = apps.map(mapAppToCardFormat);
+
+  // Get featured apps (first 6)
+  const featuredApps = mappedApps.slice(0, 6);
+
   return (
     <div className="min-h-screen bg-[#111] text-white">
       {/* Architectural Grid Lines - Top */}
@@ -182,12 +125,15 @@ export default function Home() {
 
                   {/* CTA - Red Accent */}
                   <div className="pt-4">
-                    <button className="group inline-flex items-center gap-4 bg-[#dc2626] text-white px-8 py-4 text-sm font-semibold tracking-[0.05em] uppercase hover:bg-[#b91c1c] transition-colors">
+                    <Link
+                      href="#collection"
+                      className="group inline-flex items-center gap-4 bg-[#dc2626] text-white px-8 py-4 text-sm font-semibold tracking-[0.05em] uppercase hover:bg-[#b91c1c] transition-colors"
+                    >
                       <span>Browse Collection</span>
                       <span className="text-lg group-hover:translate-x-1 transition-transform">
                         →
                       </span>
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -198,10 +144,18 @@ export default function Home() {
                 <div className="grid grid-cols-2 gap-px bg-[#333]">
                   <div className="bg-[#111] p-6 sm:p-8">
                     <span className="text-[clamp(2rem,5vw,4rem)] font-black text-white leading-none">
-                      {sampleApps.length}
+                      {mappedApps.length}
                     </span>
                     <p className="text-xs font-medium tracking-[0.15em] uppercase text-[#666] mt-2">
                       Featured Apps
+                    </p>
+                  </div>
+                  <div className="bg-[#111] p-6 sm:p-8">
+                    <span className="text-[clamp(2rem,5vw,4rem)] font-black text-[#dc2626] leading-none">
+                      {categories.length}
+                    </span>
+                    <p className="text-xs font-medium tracking-[0.15em] uppercase text-[#666] mt-2">
+                      Categories
                     </p>
                   </div>
                   <div className="bg-[#111] p-6 sm:p-8">
@@ -209,23 +163,15 @@ export default function Home() {
                       4
                     </span>
                     <p className="text-xs font-medium tracking-[0.15em] uppercase text-[#666] mt-2">
-                      Platforms
-                    </p>
-                  </div>
-                  <div className="bg-[#111] p-6 sm:p-8">
-                    <span className="text-[clamp(2rem,5vw,4rem)] font-black text-[#dc2626] leading-none">
-                      ∞
-                    </span>
-                    <p className="text-xs font-medium tracking-[0.15em] uppercase text-[#666] mt-2">
-                      Possibilities
+                      AI Clients
                     </p>
                   </div>
                   <div className="bg-[#111] p-6 sm:p-8">
                     <span className="text-[clamp(2rem,5vw,4rem)] font-black text-white leading-none">
-                      0
+                      100%
                     </span>
                     <p className="text-xs font-medium tracking-[0.15em] uppercase text-[#666] mt-2">
-                      Borders
+                      Open Source
                     </p>
                   </div>
                 </div>
@@ -247,24 +193,12 @@ export default function Home() {
         {/* Category Filter Bar */}
         <section className="border-y border-[#333] bg-[#0a0a0a]">
           <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12 py-6">
-            <CategoryFilter
-              categories={[
-                {
-                  id: "data-visualization",
-                  name: "Data Visualization",
-                  count: 12,
-                },
-                { id: "developer-tools", name: "Developer Tools", count: 24 },
-                { id: "productivity", name: "Productivity", count: 18 },
-                { id: "communication", name: "Communication", count: 8 },
-                { id: "content-creation", name: "Content Creation", count: 15 },
-              ]}
-            />
+            <CategoryFilter categories={categoryFilters} />
           </div>
         </section>
 
         {/* Apps Section - Asymmetric Grid */}
-        <section className="py-24 sm:py-32">
+        <section id="collection" className="py-24 sm:py-32">
           <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12">
             {/* Section Header - Left Aligned */}
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-16 pb-8 border-b border-[#333]">
@@ -278,7 +212,7 @@ export default function Home() {
               </div>
               <div className="flex items-center gap-4">
                 <span className="text-xs font-medium tracking-[0.1em] uppercase text-[#666]">
-                  {sampleApps.length} Apps
+                  {mappedApps.length} Apps
                 </span>
                 <div className="w-12 h-px bg-[#333]" />
               </div>
@@ -286,111 +220,43 @@ export default function Home() {
 
             {/* App Grid */}
             <AppGrid>
-              {sampleApps.map((app) => (
-                <AppCard
-                  key={app.id}
-                  app={app}
-                  onClick={() => console.log(`Clicked on ${app.name}`)}
-                />
+              {featuredApps.map((app) => (
+                <AppCard key={app.id} app={app} />
               ))}
             </AppGrid>
-          </div>
-        </section>
 
-        {/* CTA Section - Full Width */}
-        <section className="border-t border-[#333]">
-          <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2">
-              <div className="py-16 lg:py-24 lg:pr-12 border-r border-[#333]">
-                <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-[#dc2626] block mb-4">
-                  Submit Your App
-                </span>
-                <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-[-0.03em] uppercase leading-[0.95] mb-6">
-                  JOIN THE
-                  <br />
-                  DIRECTORY
-                </h3>
-                <p className="text-[#888] max-w-md mb-8">
-                  Have you built an MCP App? Submit it to our curated directory
-                  and reach thousands of developers.
-                </p>
-                <button className="inline-flex items-center gap-4 border border-[#333] text-white px-6 py-3 text-xs font-semibold tracking-[0.1em] uppercase hover:bg-white hover:text-black transition-colors">
-                  <span>Get Started</span>
+            {/* View All Link */}
+            {mappedApps.length > 6 && (
+              <div className="mt-12 text-center">
+                <Link
+                  href="#"
+                  className="inline-flex items-center gap-2 text-[#dc2626] hover:text-[#b91c1c] transition-colors text-sm font-medium tracking-wide uppercase"
+                >
+                  View All Apps
                   <span>→</span>
-                </button>
+                </Link>
               </div>
-              <div className="py-16 lg:py-24 lg:pl-12 border-t lg:border-t-0 border-[#333] flex items-center">
-                <div className="grid grid-cols-2 gap-8 w-full">
-                  <div className="border-l-2 border-[#dc2626] pl-4">
-                    <span className="text-2xl font-black">MIT</span>
-                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">
-                      License
-                    </p>
-                  </div>
-                  <div className="border-l-2 border-[#333] pl-4">
-                    <span className="text-2xl font-black">Open</span>
-                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">
-                      Source
-                    </p>
-                  </div>
-                  <div className="border-l-2 border-[#333] pl-4">
-                    <span className="text-2xl font-black">Curated</span>
-                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">
-                      Quality
-                    </p>
-                  </div>
-                  <div className="border-l-2 border-[#333] pl-4">
-                    <span className="text-2xl font-black">Global</span>
-                    <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">
-                      Community
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         </section>
-
-        {/* Footer - Architectural */}
-        <footer className="border-t border-[#333]">
-          <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12">
-            <div className="py-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <span className="text-xs font-medium tracking-[0.2em] uppercase text-[#444]">
-                  MCP APPS
-                </span>
-                <div className="w-2 h-2 bg-[#333]" />
-                <span className="text-[10px] tracking-[0.15em] uppercase text-[#333]">
-                  Swiss Studio
-                </span>
-              </div>
-              <div className="flex items-center gap-8">
-                <a
-                  href="#"
-                  className="text-[10px] tracking-[0.15em] uppercase text-[#555] hover:text-white transition-colors"
-                >
-                  GitHub
-                </a>
-                <a
-                  href="#"
-                  className="text-[10px] tracking-[0.15em] uppercase text-[#555] hover:text-white transition-colors"
-                >
-                  Docs
-                </a>
-                <a
-                  href="#"
-                  className="text-[10px] tracking-[0.15em] uppercase text-[#555] hover:text-white transition-colors"
-                >
-                  Contact
-                </a>
-              </div>
-              <span className="text-[10px] tracking-[0.1em] text-[#333]">
-                © 2026
-              </span>
-            </div>
-          </div>
-        </footer>
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-[#333]">
+        <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12 py-12">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <span className="text-xs font-medium tracking-[0.2em] uppercase text-[#666]">
+                MCP
+              </span>
+              <span className="text-sm font-semibold tracking-tight">APPS</span>
+            </div>
+            <p className="text-[10px] tracking-[0.1em] uppercase text-[#444]">
+              Curated by Swiss Studio • Built with Next.js & Supabase
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
