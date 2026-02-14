@@ -72,6 +72,8 @@ export interface Review {
   helpful_count: number;
   created_at: string;
   updated_at: string;
+  // Joined fields (not in DB schema, used in UI)
+  author?: string;
 }
 
 export interface CategoryWithCount extends Category {

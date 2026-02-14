@@ -454,7 +454,12 @@ export default function AppDetailPage() {
                       {review.comment}
                     </p>
                     <div className="flex items-center justify-between text-[11px] text-[#666]">
-                      <span>@{review.author || "anonymous"}</span>
+                      <span>
+                        @
+                        {review.user_id
+                          ? review.user_id.slice(0, 8)
+                          : "anonymous"}
+                      </span>
                       <span>
                         {new Date(review.created_at).toLocaleDateString()}
                       </span>
