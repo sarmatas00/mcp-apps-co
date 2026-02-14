@@ -26,7 +26,11 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getAppBySlug, getRelatedApps, getReviewsByAppId } from "@/lib/supabase/client";
+import {
+  getAppBySlug,
+  getRelatedApps,
+  getReviewsByAppId,
+} from "@/lib/supabase/client";
 
 interface Review {
   id: string;
@@ -63,18 +67,30 @@ function generateConfig(appSlug: string, client: string): string {
       description: `MCP App: ${appSlug}`,
     },
     vscode: {
-      "mcp.servers": [{ name: appSlug, command: "npx", args: [`@mcp-apps/${appSlug}`] }],
+      "mcp.servers": [
+        { name: appSlug, command: "npx", args: [`@mcp-apps/${appSlug}`] },
+      ],
     },
     goose: {
       extensions: {
-        [appSlug]: { name: appSlug, cmd: "npx", args: [`@mcp-apps/${appSlug}`] },
+        [appSlug]: {
+          name: appSlug,
+          cmd: "npx",
+          args: [`@mcp-apps/${appSlug}`],
+        },
       },
     },
   };
   return JSON.stringify(configs[client] || configs.claude, null, 2);
 }
 
-function ClientBadge({ client, supported }: { client: string; supported: boolean }) {
+function ClientBadge({
+  client,
+  supported,
+}: {
+  client: string;
+  supported: boolean;
+}) {
   const icons: Record<string, React.ReactNode> = {
     claude: <Sparkles className="w-3.5 h-3.5" />,
     chatgpt: <MessageCircle className="w-3.5 h-3.5" />,
@@ -88,18 +104,29 @@ function ClientBadge({ client, supported }: { client: string; supported: boolean
         "inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-medium tracking-wide uppercase border",
         supported
           ? "bg-[#1a1a1a] border-[#444] text-white"
-          : "bg-[#111] border-[#222] text-[#444]"
+          : "bg-[#111] border-[#222] text-[#444]",
       )}
     >
       {icons[client]}
       <span>{getClientName(client)}</span>
-      {supported ? <Check className="w-3 h-3" /> : <span className="text-[8px]">—</span>}
+      {supported ? (
+        <Check className="w-3 h-3" />
+      ) : (
+        <span className="text-[8px]">—</span>
+      )}
     </div>
   );
 }
 
-function StarRating({ rating, size = "md" }: { rating: number; size?: "sm" | "md" | "lg" }) {
-  const sizeClass = size === "sm" ? "w-3 h-3" : size === "lg" ? "w-5 h-5" : "w-4 h-4";
+function StarRating({
+  rating,
+  size = "md",
+}: {
+  rating: number;
+  size?: "sm" | "md" | "lg";
+}) {
+  const sizeClass =
+    size === "sm" ? "w-3 h-3" : size === "lg" ? "w-5 h-5" : "w-4 h-4";
   return (
     <div className="flex items-center gap-0.5">
       {[1, 2, 3, 4, 5].map((star) => (
@@ -107,7 +134,9 @@ function StarRating({ rating, size = "md" }: { rating: number; size?: "sm" | "md
           key={star}
           className={cn(
             sizeClass,
-            star <= Math.round(rating) ? "text-white fill-white" : "text-[#444]"
+            star <= Math.round(rating)
+              ? "text-white fill-white"
+              : "text-[#444]",
           )}
         />
       ))}
@@ -122,16 +151,21 @@ function formatInstallCount(count: number): string {
 }
 
 function formatCategory(category: string): string {
-  return category.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  return category
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 }
 
 export default function AppDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
-  
+
   const [app, setApp] = React.useState<Record<string, unknown> | null>(null);
   const [reviews, setReviews] = React.useState<Review[]>([]);
-  const [relatedApps, setRelatedApps] = React.useState<Record<string, unknown>[]>([]);
+  const [relatedApps, setRelatedApps] = React.useState<
+    Record<string, unknown>[]
+  >([]);
   const [loading, setLoading] = React.useState(true);
   const [selectedClient, setSelectedClient] = React.useState<string>("claude");
   const [copied, setCopied] = React.useState(false);
@@ -139,23 +173,23 @@ export default function AppDetailPage() {
   React.useEffect(() => {
     async function fetchData() {
       if (!slug) return;
-      
+
       const appData = await getAppBySlug(slug);
       if (appData) {
         setApp(appData);
-        
+
         // Fetch reviews and related apps in parallel
         const [reviewsData, relatedData] = await Promise.all([
           getReviewsByAppId(appData.id),
           getRelatedApps(appData.id, appData.category_id, 3),
         ]);
-        
+
         setReviews(reviewsData);
         setRelatedApps(relatedData);
       }
       setLoading(false);
     }
-    
+
     fetchData();
   }, [slug]);
 
@@ -194,7 +228,9 @@ export default function AppDetailPage() {
     app.compatibility_goose && "goose",
   ].filter(Boolean) as string[];
 
-  const screenshotUrl = app.screenshot_urls?.[0] || "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&h=750&fit=crop";
+  const screenshotUrl =
+    app.screenshot_urls?.[0] ||
+    "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&h=750&fit=crop";
 
   return (
     <div className="min-h-screen bg-[#111] text-white">
@@ -206,7 +242,10 @@ export default function AppDetailPage() {
               MCP Apps
             </Link>
             <span className="text-[#333]">/</span>
-            <Link href="/" className="text-[#666] hover:text-white transition-colors">
+            <Link
+              href="/"
+              className="text-[#666] hover:text-white transition-colors"
+            >
               Apps
             </Link>
             <span className="text-[#333]">/</span>
@@ -235,7 +274,9 @@ export default function AppDetailPage() {
             {/* Left */}
             <div className="space-y-6">
               <div className="flex flex-wrap items-center gap-4 text-[11px] tracking-[0.1em] uppercase text-[#666]">
-                <span className="text-[#dc2626]">{formatCategory(app.category?.slug || "")}</span>
+                <span className="text-[#dc2626]">
+                  {formatCategory(app.category?.slug || "")}
+                </span>
                 <span className="text-[#333]">|</span>
                 <div className="flex items-center gap-1.5">
                   <span className="text-white">{app.rating.toFixed(1)}</span>
@@ -251,13 +292,27 @@ export default function AppDetailPage() {
                 {app.name}
               </h1>
 
-              <p className="text-lg sm:text-xl text-[#888] max-w-2xl">{app.tagline}</p>
+              <p className="text-lg sm:text-xl text-[#888] max-w-2xl">
+                {app.tagline}
+              </p>
 
               <div className="flex flex-wrap gap-2">
-                <ClientBadge client="claude" supported={app.compatibility_claude} />
-                <ClientBadge client="chatgpt" supported={app.compatibility_chatgpt} />
-                <ClientBadge client="vscode" supported={app.compatibility_vscode} />
-                <ClientBadge client="goose" supported={app.compatibility_goose} />
+                <ClientBadge
+                  client="claude"
+                  supported={app.compatibility_claude}
+                />
+                <ClientBadge
+                  client="chatgpt"
+                  supported={app.compatibility_chatgpt}
+                />
+                <ClientBadge
+                  client="vscode"
+                  supported={app.compatibility_vscode}
+                />
+                <ClientBadge
+                  client="goose"
+                  supported={app.compatibility_goose}
+                />
               </div>
             </div>
 
@@ -271,7 +326,10 @@ export default function AppDetailPage() {
                     <ChevronDown className="w-4 h-4 ml-2" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-[300px] bg-[#1a1a1a] border-[#333] p-4">
+                <DropdownMenuContent
+                  align="end"
+                  className="w-[300px] bg-[#1a1a1a] border-[#333] p-4"
+                >
                   <div className="space-y-4">
                     <div>
                       <label className="text-[10px] tracking-wide uppercase text-[#666] block mb-2">
@@ -286,7 +344,7 @@ export default function AppDetailPage() {
                               "px-3 py-1.5 text-[10px] font-medium tracking-wide uppercase border transition-colors",
                               selectedClient === client
                                 ? "bg-[#dc2626] border-[#dc2626] text-white"
-                                : "bg-[#111] border-[#333] text-[#888] hover:border-[#555]"
+                                : "bg-[#111] border-[#333] text-[#888] hover:border-[#555]",
                             )}
                           >
                             {getClientName(client)}
@@ -304,7 +362,11 @@ export default function AppDetailPage() {
                           onClick={handleCopy}
                           className="text-[10px] text-[#888] hover:text-white flex items-center gap-1"
                         >
-                          {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                          {copied ? (
+                            <Check className="w-3 h-3" />
+                          ) : (
+                            <Copy className="w-3 h-3" />
+                          )}
                           {copied ? "Copied" : "Copy"}
                         </button>
                       </div>
@@ -381,8 +443,12 @@ export default function AppDetailPage() {
                   </span>
                   <div className="flex items-center gap-3">
                     <StarRating rating={app.rating} size="lg" />
-                    <span className="text-2xl font-bold">{app.rating.toFixed(1)}</span>
-                    <span className="text-[#666]">({app.review_count} reviews)</span>
+                    <span className="text-2xl font-bold">
+                      {app.rating.toFixed(1)}
+                    </span>
+                    <span className="text-[#666]">
+                      ({app.review_count} reviews)
+                    </span>
                   </div>
                 </div>
               </div>
@@ -392,9 +458,14 @@ export default function AppDetailPage() {
                   <div key={review.id} className="border border-[#333] p-6">
                     <div className="flex items-center justify-between mb-4">
                       <StarRating rating={review.rating} size="sm" />
-                      <ClientBadge client={review.client_used} supported={true} />
+                      <ClientBadge
+                        client={review.client_used}
+                        supported={true}
+                      />
                     </div>
-                    <p className="text-sm text-[#aaa] mb-4 leading-relaxed">{review.comment}</p>
+                    <p className="text-sm text-[#aaa] mb-4 leading-relaxed">
+                      {review.comment}
+                    </p>
                     <div className="flex items-center justify-between text-[11px] text-[#666]">
                       <span>@{review.author}</span>
                       <span>{new Date(review.date).toLocaleDateString()}</span>
@@ -422,7 +493,10 @@ export default function AppDetailPage() {
                   >
                     <div className="relative aspect-[16/10] bg-[#0a0a0a] overflow-hidden">
                       <Image
-                        src={relatedApp.screenshot_urls?.[0] || "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=250&fit=crop"}
+                        src={
+                          relatedApp.screenshot_urls?.[0] ||
+                          "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=250&fit=crop"
+                        }
                         alt={relatedApp.name}
                         fill
                         className="object-cover"
@@ -435,7 +509,9 @@ export default function AppDetailPage() {
                         </span>
                         <div className="flex items-center gap-1">
                           <Star className="w-3 h-3 text-white fill-white" />
-                          <span className="text-xs">{relatedApp.rating.toFixed(1)}</span>
+                          <span className="text-xs">
+                            {relatedApp.rating.toFixed(1)}
+                          </span>
                         </div>
                       </div>
                       <h4 className="font-semibold group-hover:text-[#dc2626] transition-colors">

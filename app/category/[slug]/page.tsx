@@ -3,7 +3,11 @@ import { ArrowLeft } from "lucide-react";
 import { AppCard, AppGrid } from "@/components/app-card";
 import { CategoryFilter } from "@/components/category-filter";
 import { SearchCommand } from "@/components/search-command";
-import { getAppsByCategory, getCategories, getCategoryBySlug } from "@/lib/supabase/client";
+import {
+  getAppsByCategory,
+  getCategories,
+  getCategoryBySlug,
+} from "@/lib/supabase/client";
 import { notFound } from "next/navigation";
 
 // Generate static paths for all categories
@@ -51,9 +55,13 @@ function mapAppToCardFormat(app: {
   };
 }
 
-export default async function CategoryPage({ params }: { params: { slug: string } }) {
+export default async function CategoryPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const { slug } = await Promise.resolve(params);
-  
+
   // Fetch category and apps in parallel
   const [category, apps, allCategories] = await Promise.all([
     getCategoryBySlug(slug),
@@ -66,14 +74,16 @@ export default async function CategoryPage({ params }: { params: { slug: string 
   }
 
   const categoryApps = apps.map(mapAppToCardFormat);
-  
+
   const categoryFilters = allCategories.map((cat) => ({
     id: cat.slug,
     name: cat.name,
     count: cat.count || 0,
   }));
 
-  const otherCategories = allCategories.filter((c) => c.slug !== slug).slice(0, 4);
+  const otherCategories = allCategories
+    .filter((c) => c.slug !== slug)
+    .slice(0, 4);
 
   return (
     <div className="min-h-screen bg-[#111] text-white">
@@ -82,7 +92,10 @@ export default async function CategoryPage({ params }: { params: { slug: string 
         <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12">
           <div className="flex h-16 items-center justify-between gap-4">
             <div className="flex items-center gap-4 flex-shrink-0">
-              <Link href="/" className="text-xs font-medium tracking-[0.2em] uppercase text-[#666]">
+              <Link
+                href="/"
+                className="text-xs font-medium tracking-[0.2em] uppercase text-[#666]"
+              >
                 MCP
               </Link>
               <span className="text-sm font-semibold tracking-tight">APPS</span>
@@ -111,7 +124,10 @@ export default async function CategoryPage({ params }: { params: { slug: string 
           <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
             {/* Breadcrumb */}
             <div className="flex items-center gap-4 mb-8 text-[11px] tracking-[0.1em] uppercase text-[#666]">
-              <Link href="/" className="flex items-center gap-2 hover:text-white transition-colors">
+              <Link
+                href="/"
+                className="flex items-center gap-2 hover:text-white transition-colors"
+              >
                 <ArrowLeft className="w-3 h-3" />
                 All Apps
               </Link>
@@ -129,16 +145,22 @@ export default async function CategoryPage({ params }: { params: { slug: string 
                   {category.name}
                 </h1>
                 <p className="mt-4 text-lg text-[#888] max-w-2xl">
-                  {categoryApps.length} app{categoryApps.length !== 1 ? "s" : ""} in this category.
-                  {category.description || " Browse tools to enhance your AI workflow."}
+                  {categoryApps.length} app
+                  {categoryApps.length !== 1 ? "s" : ""} in this category.
+                  {category.description ||
+                    " Browse tools to enhance your AI workflow."}
                 </p>
               </div>
 
               {/* Stats */}
               <div className="flex items-center gap-8 text-right">
                 <div>
-                  <span className="text-3xl font-black">{categoryApps.length}</span>
-                  <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">Apps</p>
+                  <span className="text-3xl font-black">
+                    {categoryApps.length}
+                  </span>
+                  <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mt-1">
+                    Apps
+                  </p>
                 </div>
               </div>
             </div>
@@ -148,7 +170,10 @@ export default async function CategoryPage({ params }: { params: { slug: string 
         {/* Filter Bar */}
         <section className="border-b border-[#333] bg-[#0a0a0a]">
           <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12 py-6">
-            <CategoryFilter categories={categoryFilters} activeCategory={slug} />
+            <CategoryFilter
+              categories={categoryFilters}
+              activeCategory={slug}
+            />
           </div>
         </section>
 
@@ -163,7 +188,9 @@ export default async function CategoryPage({ params }: { params: { slug: string 
               </AppGrid>
             ) : (
               <div className="text-center py-24">
-                <p className="text-[#666] text-lg">No apps found in this category yet.</p>
+                <p className="text-[#666] text-lg">
+                  No apps found in this category yet.
+                </p>
                 <Link
                   href="/"
                   className="inline-flex items-center gap-2 mt-6 text-[#dc2626] hover:text-[#b91c1c] transition-colors"
@@ -209,7 +236,9 @@ export default async function CategoryPage({ params }: { params: { slug: string 
         <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12 py-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <span className="text-xs font-medium tracking-[0.2em] uppercase text-[#666]">MCP</span>
+              <span className="text-xs font-medium tracking-[0.2em] uppercase text-[#666]">
+                MCP
+              </span>
               <span className="text-sm font-semibold tracking-tight">APPS</span>
             </div>
             <span className="text-[10px] tracking-[0.1em] uppercase text-[#444]">

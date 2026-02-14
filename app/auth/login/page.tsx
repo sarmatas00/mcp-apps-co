@@ -28,9 +28,7 @@ export default function LoginPage() {
           <h1 className="text-2xl font-black tracking-tight uppercase mb-2">
             Sign In
           </h1>
-          <p className="text-sm text-[#666]">
-            Sign in to submit your MCP apps
-          </p>
+          <p className="text-sm text-[#666]">Sign in to submit your MCP apps</p>
         </div>
 
         <form action={signIn} className="space-y-6">

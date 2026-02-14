@@ -4,7 +4,9 @@ import { getCategories } from "@/lib/supabase/client";
 
 export default async function SubmitAppPage() {
   const supabase = createClient();
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   if (!session) {
     redirect("/auth/login?redirect=/submit");
@@ -16,7 +18,9 @@ export default async function SubmitAppPage() {
     "use server";
 
     const supabase = createClient();
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
     if (!session) {
       return redirect("/auth/login");
@@ -70,7 +74,8 @@ export default async function SubmitAppPage() {
               Submit Your App
             </h2>
             <p className="text-[#888]">
-              Share your MCP app with the community. All submissions are reviewed before publishing.
+              Share your MCP app with the community. All submissions are
+              reviewed before publishing.
             </p>
           </div>
 

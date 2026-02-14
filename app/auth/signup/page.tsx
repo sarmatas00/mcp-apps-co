@@ -10,7 +10,7 @@ export default function SignUpPage() {
     const name = formData.get("name") as string;
 
     const supabase = createClient();
-    
+
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -22,7 +22,9 @@ export default function SignUpPage() {
     });
 
     if (authError) {
-      return redirect("/auth/signup?error=" + encodeURIComponent(authError.message));
+      return redirect(
+        "/auth/signup?error=" + encodeURIComponent(authError.message),
+      );
     }
 
     // Create developer profile
@@ -38,7 +40,10 @@ export default function SignUpPage() {
       }
     }
 
-    return redirect("/auth/login?message=" + encodeURIComponent("Check your email to confirm your account"));
+    return redirect(
+      "/auth/login?message=" +
+        encodeURIComponent("Check your email to confirm your account"),
+    );
   }
 
   return (
@@ -48,9 +53,7 @@ export default function SignUpPage() {
           <h1 className="text-2xl font-black tracking-tight uppercase mb-2">
             Create Account
           </h1>
-          <p className="text-sm text-[#666]">
-            Sign up to submit your MCP apps
-          </p>
+          <p className="text-sm text-[#666]">Sign up to submit your MCP apps</p>
         </div>
 
         <form action={signUp} className="space-y-6">

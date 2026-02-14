@@ -11,7 +11,14 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { Search, Sparkles, Code, MessageCircle, Bird, ArrowRight } from "lucide-react";
+import {
+  Search,
+  Sparkles,
+  Code,
+  MessageCircle,
+  Bird,
+  ArrowRight,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { searchApps, getCategories } from "@/lib/supabase/client";
 
@@ -57,7 +64,9 @@ export function SearchCommand() {
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [results, setResults] = React.useState<App[]>([]);
-  const [categories, setCategories] = React.useState<{ id: string; name: string; slug: string }[]>([]);
+  const [categories, setCategories] = React.useState<
+    { id: string; name: string; slug: string }[]
+  >([]);
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
@@ -76,7 +85,9 @@ export function SearchCommand() {
   React.useEffect(() => {
     async function loadCategories() {
       const cats = await getCategories();
-      setCategories(cats.map(c => ({ id: c.id, name: c.name, slug: c.slug })));
+      setCategories(
+        cats.map((c) => ({ id: c.id, name: c.name, slug: c.slug })),
+      );
     }
     if (open) {
       loadCategories();
@@ -95,7 +106,7 @@ export function SearchCommand() {
       setResults(apps as App[]);
       setLoading(false);
     }
-    
+
     const timeout = setTimeout(doSearch, 150);
     return () => clearTimeout(timeout);
   }, [query]);
@@ -113,7 +124,7 @@ export function SearchCommand() {
         className={cn(
           "flex items-center gap-3 px-4 py-2.5 text-left",
           "bg-[#1a1a1a] border border-[#333] hover:border-[#555]",
-          "transition-colors w-full sm:w-[400px]"
+          "transition-colors w-full sm:w-[400px]",
         )}
       >
         <Search className="w-4 h-4 text-[#666]" />
@@ -189,7 +200,9 @@ export function SearchCommand() {
                         {formatCategory(app.category?.slug || "")}
                       </span>
                     </div>
-                    <p className="text-xs text-[#888] truncate">{app.description}</p>
+                    <p className="text-xs text-[#888] truncate">
+                      {app.description}
+                    </p>
                     <div className="flex items-center gap-1.5 mt-2">
                       {app.compatibility_claude && (
                         <span className="text-[#555]" title="Works with Claude">
@@ -197,12 +210,18 @@ export function SearchCommand() {
                         </span>
                       )}
                       {app.compatibility_chatgpt && (
-                        <span className="text-[#555]" title="Works with ChatGPT">
+                        <span
+                          className="text-[#555]"
+                          title="Works with ChatGPT"
+                        >
                           {getClientIcon("chatgpt")}
                         </span>
                       )}
                       {app.compatibility_vscode && (
-                        <span className="text-[#555]" title="Works with VS Code">
+                        <span
+                          className="text-[#555]"
+                          title="Works with VS Code"
+                        >
                           {getClientIcon("vscode")}
                         </span>
                       )}
