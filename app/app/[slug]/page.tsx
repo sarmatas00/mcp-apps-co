@@ -129,9 +129,9 @@ export default function AppDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
   
-  const [app, setApp] = React.useState<any>(null);
+  const [app, setApp] = React.useState<Record<string, unknown> | null>(null);
   const [reviews, setReviews] = React.useState<Review[]>([]);
-  const [relatedApps, setRelatedApps] = React.useState<any[]>([]);
+  const [relatedApps, setRelatedApps] = React.useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [selectedClient, setSelectedClient] = React.useState<string>("claude");
   const [copied, setCopied] = React.useState(false);
