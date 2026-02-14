@@ -115,18 +115,20 @@ export async function getCategories() {
 
     // Get app counts for each category
     const categoriesWithCounts = await Promise.all(
-      (data || []).map(async (category: { id: string; slug: string; name: string }) => {
-        const { count, error: countError } = await supabase
-          .from("apps")
-          .select("*", { count: "exact", head: true })
-          .eq("category_id", category.id)
-          .eq("is_published", true);
+      (data || []).map(
+        async (category: { id: string; slug: string; name: string }) => {
+          const { count, error: countError } = await supabase
+            .from("apps")
+            .select("*", { count: "exact", head: true })
+            .eq("category_id", category.id)
+            .eq("is_published", true);
 
-        return {
-          ...category,
-          count: countError ? 0 : count || 0,
-        };
-      }),
+          return {
+            ...category,
+            count: countError ? 0 : count || 0,
+          };
+        },
+      ),
     );
 
     return categoriesWithCounts;
