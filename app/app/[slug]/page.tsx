@@ -1,130 +1,80 @@
+"use client";
+
+import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import {
   Star,
+  Download,
+  Copy,
+  Check,
   Github,
   Globe,
-  Terminal,
-  Bird,
   Sparkles,
   Code,
+  Bird,
   MessageCircle,
+  Terminal,
+  ChevronDown,
+  ArrowLeft,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { HeroSection } from "./hero-section";
-import type { AppDetailData } from "./types";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { getAppBySlug, getRelatedApps, getReviewsByAppId } from "@/lib/supabase/client";
 
-// Sample data for static generation
-const sampleApps: AppDetailData[] = [
-  {
-    id: "1",
-    slug: "interactive-charts",
-    name: "Interactive Charts",
-    tagline:
-      "Beautiful data visualizations that render directly in AI conversations",
-    description:
-      "Beautiful data visualizations and charts that render directly in your AI conversations.",
-    fullDescription:
-      "Interactive Charts brings the power of data visualization to your AI assistant. Create stunning, interactive charts directly within your conversations without leaving the chat interface. Whether you're analyzing sales data, tracking project metrics, or presenting research findings, Interactive Charts makes it effortless to transform raw data into compelling visual stories.",
-    features: [
-      "Line, bar, pie, and scatter chart types",
-      "Real-time data updates",
-      "Interactive tooltips and legends",
-      "Responsive design for all screen sizes",
-      "Export charts as PNG or SVG",
-      "Dark mode support",
-    ],
-    useCases: [
-      "Sales performance dashboards",
-      "Project timeline visualizations",
-      "Financial data analysis",
-      "Scientific research presentations",
-    ],
-    screenshots: [
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=750&fit=crop",
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&h=750&fit=crop",
-    ],
-    category: "data-visualization",
-    rating: 4.8,
-    reviewCount: 324,
-    installCount: 12500,
-    author: {
-      name: "datawiz",
-      avatarUrl:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
-      github: "https://github.com/datawiz",
-      website: "https://datawiz.io",
-      bio: "Data visualization enthusiast",
-    },
-    compatibility: {
-      claude: true,
-      chatgpt: true,
-      vscode: false,
-      goose: true,
-    },
-    githubUrl: "https://github.com/datawiz/interactive-charts",
-    websiteUrl: "https://interactive-charts.dev",
-    reviews: [
-      {
-        id: "1",
-        author: "sarah_dev",
-        rating: 5,
-        date: "2026-02-10",
-        content: "Absolutely game-changing for my data analysis workflow.",
-        clientUsed: "claude",
-      },
-      {
-        id: "2",
-        author: "metrics_guru",
-        rating: 4,
-        date: "2026-02-08",
-        content: "Great component! Would love to see more chart types.",
-        clientUsed: "chatgpt",
-      },
-    ],
-    relatedApps: [
-      {
-        id: "2",
-        slug: "sql-query-builder",
-        name: "SQL Query Builder",
-        screenshotUrl:
-          "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=400&h=250&fit=crop",
-        category: "developer-tools",
-        rating: 4.7,
-      },
-    ],
-  },
-];
-
-// Generate static paths for all apps
-export function generateStaticParams() {
-  return sampleApps.map((app) => ({
-    slug: app.slug,
-  }));
+interface Review {
+  id: string;
+  author: string;
+  rating: number;
+  date: string;
+  content: string;
+  client_used: string;
 }
 
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <div className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <Star
-          key={star}
-          className={`w-4 h-4 ${
-            star <= Math.round(rating) ? "text-white fill-white" : "text-[#444]"
-          }`}
-        />
-      ))}
-    </div>
-  );
+function getClientName(client: string): string {
+  const names: Record<string, string> = {
+    claude: "Claude",
+    chatgpt: "ChatGPT",
+    vscode: "VS Code",
+    goose: "Goose",
+  };
+  return names[client] || client;
 }
 
-function ClientBadge({
-  client,
-  supported,
-}: {
-  client: string;
-  supported: boolean;
-}) {
+function generateConfig(appSlug: string, client: string): string {
+  const configs: Record<string, object> = {
+    claude: {
+      mcpServers: {
+        [appSlug]: {
+          command: "npx",
+          args: [`@mcp-apps/${appSlug}`],
+          env: { API_KEY: "your-api-key" },
+        },
+      },
+    },
+    chatgpt: {
+      name: appSlug,
+      description: `MCP App: ${appSlug}`,
+    },
+    vscode: {
+      "mcp.servers": [{ name: appSlug, command: "npx", args: [`@mcp-apps/${appSlug}`] }],
+    },
+    goose: {
+      extensions: {
+        [appSlug]: { name: appSlug, cmd: "npx", args: [`@mcp-apps/${appSlug}`] },
+      },
+    },
+  };
+  return JSON.stringify(configs[client] || configs.claude, null, 2);
+}
+
+function ClientBadge({ client, supported }: { client: string; supported: boolean }) {
   const icons: Record<string, React.ReactNode> = {
     claude: <Sparkles className="w-3.5 h-3.5" />,
     chatgpt: <MessageCircle className="w-3.5 h-3.5" />,
@@ -134,34 +84,121 @@ function ClientBadge({
 
   return (
     <div
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-medium tracking-wide uppercase border ${
+      className={cn(
+        "inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-medium tracking-wide uppercase border",
         supported
           ? "bg-[#1a1a1a] border-[#444] text-white"
           : "bg-[#111] border-[#222] text-[#444]"
-      }`}
+      )}
     >
       {icons[client]}
-      <span>{client.charAt(0).toUpperCase() + client.slice(1)}</span>
+      <span>{getClientName(client)}</span>
+      {supported ? <Check className="w-3 h-3" /> : <span className="text-[8px]">—</span>}
     </div>
   );
 }
 
-function formatCategory(category: string): string {
-  return category
-    .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
+function StarRating({ rating, size = "md" }: { rating: number; size?: "sm" | "md" | "lg" }) {
+  const sizeClass = size === "sm" ? "w-3 h-3" : size === "lg" ? "w-5 h-5" : "w-4 h-4";
+  return (
+    <div className="flex items-center gap-0.5">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <Star
+          key={star}
+          className={cn(
+            sizeClass,
+            star <= Math.round(rating) ? "text-white fill-white" : "text-[#444]"
+          )}
+        />
+      ))}
+    </div>
+  );
 }
 
-export default function AppDetailPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const app = sampleApps.find((a) => a.slug === params.slug) || sampleApps[0];
+function formatInstallCount(count: number): string {
+  if (count >= 1000000) return `${(count / 1000000).toFixed(1)}M`;
+  if (count >= 1000) return `${(count / 1000).toFixed(1)}k`;
+  return count.toString();
+}
+
+function formatCategory(category: string): string {
+  return category.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+}
+
+export default function AppDetailPage() {
+  const params = useParams();
+  const slug = params.slug as string;
+  
+  const [app, setApp] = React.useState<any>(null);
+  const [reviews, setReviews] = React.useState<Review[]>([]);
+  const [relatedApps, setRelatedApps] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [selectedClient, setSelectedClient] = React.useState<string>("claude");
+  const [copied, setCopied] = React.useState(false);
+
+  React.useEffect(() => {
+    async function fetchData() {
+      if (!slug) return;
+      
+      const appData = await getAppBySlug(slug);
+      if (appData) {
+        setApp(appData);
+        
+        // Fetch reviews and related apps in parallel
+        const [reviewsData, relatedData] = await Promise.all([
+          getReviewsByAppId(appData.id),
+          getRelatedApps(appData.id, appData.category_id, 3),
+        ]);
+        
+        setReviews(reviewsData);
+        setRelatedApps(relatedData);
+      }
+      setLoading(false);
+    }
+    
+    fetchData();
+  }, [slug]);
+
+  const handleCopy = () => {
+    if (!app) return;
+    navigator.clipboard.writeText(generateConfig(app.slug, selectedClient));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#111] text-white flex items-center justify-center">
+        <div className="text-[#666]">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!app) {
+    return (
+      <div className="min-h-screen bg-[#111] text-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">App Not Found</h1>
+          <Link href="/" className="text-[#dc2626] hover:underline">
+            ← Back to all apps
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const supportedClients = [
+    app.compatibility_claude && "claude",
+    app.compatibility_chatgpt && "chatgpt",
+    app.compatibility_vscode && "vscode",
+    app.compatibility_goose && "goose",
+  ].filter(Boolean) as string[];
+
+  const screenshotUrl = app.screenshot_urls?.[0] || "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&h=750&fit=crop";
 
   return (
     <div className="min-h-screen bg-[#111] text-white">
+      {/* Header */}
       <header className="border-b border-[#333]">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12 py-4">
           <nav className="flex items-center gap-8">
@@ -169,10 +206,7 @@ export default function AppDetailPage({
               MCP Apps
             </Link>
             <span className="text-[#333]">/</span>
-            <Link
-              href="/"
-              className="text-[#666] hover:text-white transition-colors"
-            >
+            <Link href="/" className="text-[#666] hover:text-white transition-colors">
               Apps
             </Link>
             <span className="text-[#333]">/</span>
@@ -181,9 +215,119 @@ export default function AppDetailPage({
         </div>
       </header>
 
-      <HeroSection app={app} />
+      {/* Hero Section */}
+      <section className="border-b border-[#333]">
+        {/* Screenshot */}
+        <div className="relative w-full aspect-[16/10] bg-[#0a0a0a]">
+          <Image
+            src={screenshotUrl}
+            alt={`${app.name} screenshot`}
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#111] via-transparent to-transparent" />
+        </div>
+
+        {/* Content */}
+        <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12 py-8 lg:py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-start">
+            {/* Left */}
+            <div className="space-y-6">
+              <div className="flex flex-wrap items-center gap-4 text-[11px] tracking-[0.1em] uppercase text-[#666]">
+                <span className="text-[#dc2626]">{formatCategory(app.category?.slug || "")}</span>
+                <span className="text-[#333]">|</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-white">{app.rating.toFixed(1)}</span>
+                  <span>({app.review_count} reviews)</span>
+                </div>
+                <span className="text-[#333]">|</span>
+                <div className="flex items-center gap-1.5">
+                  <span>{formatInstallCount(app.install_count)} installs</span>
+                </div>
+              </div>
+
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight uppercase">
+                {app.name}
+              </h1>
+
+              <p className="text-lg sm:text-xl text-[#888] max-w-2xl">{app.tagline}</p>
+
+              <div className="flex flex-wrap gap-2">
+                <ClientBadge client="claude" supported={app.compatibility_claude} />
+                <ClientBadge client="chatgpt" supported={app.compatibility_chatgpt} />
+                <ClientBadge client="vscode" supported={app.compatibility_vscode} />
+                <ClientBadge client="goose" supported={app.compatibility_goose} />
+              </div>
+            </div>
+
+            {/* Right - Install */}
+            <div className="flex flex-col gap-3 lg:min-w-[260px]">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button className="bg-[#dc2626] hover:bg-[#b91c1c] text-white border-0 h-12 px-8 text-sm font-semibold tracking-wide uppercase">
+                    <Download className="w-4 h-4 mr-2" />
+                    Install
+                    <ChevronDown className="w-4 h-4 ml-2" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[300px] bg-[#1a1a1a] border-[#333] p-4">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-[10px] tracking-wide uppercase text-[#666] block mb-2">
+                        Select Client
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {supportedClients.map((client) => (
+                          <button
+                            key={client}
+                            onClick={() => setSelectedClient(client)}
+                            className={cn(
+                              "px-3 py-1.5 text-[10px] font-medium tracking-wide uppercase border transition-colors",
+                              selectedClient === client
+                                ? "bg-[#dc2626] border-[#dc2626] text-white"
+                                : "bg-[#111] border-[#333] text-[#888] hover:border-[#555]"
+                            )}
+                          >
+                            {getClientName(client)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="text-[10px] tracking-wide uppercase text-[#666]">
+                          Configuration
+                        </label>
+                        <button
+                          onClick={handleCopy}
+                          className="text-[10px] text-[#888] hover:text-white flex items-center gap-1"
+                        >
+                          {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                          {copied ? "Copied" : "Copy"}
+                        </button>
+                      </div>
+                      <pre className="bg-[#0a0a0a] border border-[#333] p-3 text-[10px] text-[#888] font-mono overflow-x-auto max-h-[100px]">
+                        {generateConfig(app.slug, selectedClient)}
+                      </pre>
+                    </div>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <div className="text-center">
+                <span className="text-[10px] tracking-wide uppercase text-[#555]">
+                  Free • Open Source
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <main>
+        {/* Description */}
         <section className="py-12 lg:py-16 border-b border-[#333]">
           <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-12 lg:gap-16">
@@ -192,179 +336,118 @@ export default function AppDetailPage({
                   About
                 </span>
                 <div className="space-y-4 text-[#aaa] leading-relaxed">
-                  {app.fullDescription.split("\n\n").map((para, i) => (
-                    <p key={i}>{para}</p>
-                  ))}
+                  <p>{app.long_description || app.description}</p>
                 </div>
               </div>
 
               <div className="space-y-10">
-                <div>
-                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-4">
-                    Features
-                  </span>
-                  <ul className="space-y-3">
-                    {app.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <div className="w-1 h-1 bg-[#dc2626] mt-2" />
-                        <span className="text-sm text-[#aaa]">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div>
-                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-4">
-                    Use Cases
-                  </span>
-                  <ul className="space-y-3">
-                    {app.useCases.map((useCase, i) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <Terminal className="w-3.5 h-3.5 text-[#555] mt-0.5" />
-                        <span className="text-sm text-[#aaa]">{useCase}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-12 lg:py-16 border-b border-[#333]">
-          <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-2">
-                  Reviews
-                </span>
-                <div className="flex items-center gap-3">
-                  <StarRating rating={app.rating} />
-                  <span className="text-2xl font-bold">
-                    {app.rating.toFixed(1)}
-                  </span>
-                  <span className="text-[#666]">
-                    ({app.reviewCount} reviews)
-                  </span>
-                </div>
-              </div>
-              <Button className="bg-transparent border border-[#333] hover:border-[#dc2626] text-white h-10 px-6 text-sm">
-                Write a Review
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {app.reviews.map((review) => (
-                <div key={review.id} className="border border-[#333] p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <StarRating rating={review.rating} />
-                    <ClientBadge client={review.clientUsed} supported={true} />
-                  </div>
-                  <p className="text-sm text-[#aaa] mb-4 leading-relaxed">
-                    {review.content}
-                  </p>
-                  <div className="flex items-center justify-between text-[11px] text-[#666]">
-                    <span>@{review.author}</span>
-                    <span>{review.date}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="py-12 lg:py-16 border-b border-[#333]">
-          <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-            <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-8">
-              Developer
-            </span>
-            <div className="flex items-start gap-6">
-              <div className="w-16 h-16 bg-[#1a1a1a] border border-[#333] overflow-hidden">
-                {app.author.avatarUrl && (
-                  <Image
-                    src={app.author.avatarUrl}
-                    alt={app.author.name}
-                    width={64}
-                    height={64}
-                    className="object-cover"
-                  />
-                )}
-              </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold mb-1">{app.author.name}</h3>
-                {app.author.bio && (
-                  <p className="text-sm text-[#888] mb-4">{app.author.bio}</p>
-                )}
-                <div className="flex items-center gap-4">
-                  {app.author.github && (
-                    <a
-                      href={app.author.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-[#888] hover:text-white transition-colors"
-                    >
-                      <Github className="w-4 h-4" />
-                      GitHub
-                    </a>
-                  )}
-                  {app.author.website && (
-                    <a
-                      href={app.author.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-[#888] hover:text-white transition-colors"
-                    >
-                      <Globe className="w-4 h-4" />
-                      Website
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="py-12 lg:py-16">
-          <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
-            <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-8">
-              Related Apps
-            </span>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {app.relatedApps.map((relatedApp) => (
-                <Link
-                  key={relatedApp.id}
-                  href={`/app/${relatedApp.slug}`}
-                  className="group border border-[#333] hover:border-[#dc2626] transition-colors"
-                >
-                  <div className="relative aspect-[16/10] bg-[#0a0a0a] overflow-hidden">
-                    <Image
-                      src={relatedApp.screenshotUrl}
-                      alt={relatedApp.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] tracking-wide uppercase text-[#dc2626]">
-                        {formatCategory(relatedApp.category)}
-                      </span>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-3 h-3 text-white fill-white" />
-                        <span className="text-xs">
-                          {relatedApp.rating.toFixed(1)}
+                {app.github_url && (
+                  <div>
+                    <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-4">
+                      Links
+                    </span>
+                    <div className="space-y-3">
+                      <a
+                        href={app.github_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 text-sm text-[#aaa] hover:text-white transition-colors"
+                      >
+                        <Github className="w-4 h-4" />
+                        GitHub Repository
+                      </a>
+                      {app.npm_package && (
+                        <span className="flex items-center gap-3 text-sm text-[#aaa]">
+                          <Code className="w-4 h-4" />
+                          npm: {app.npm_package}
                         </span>
-                      </div>
+                      )}
                     </div>
-                    <h4 className="font-semibold group-hover:text-[#dc2626] transition-colors">
-                      {relatedApp.name}
-                    </h4>
                   </div>
-                </Link>
-              ))}
+                )}
+              </div>
             </div>
           </div>
         </section>
+
+        {/* Reviews */}
+        {reviews.length > 0 && (
+          <section className="py-12 lg:py-16 border-b border-[#333]">
+            <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-2">
+                    Reviews
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <StarRating rating={app.rating} size="lg" />
+                    <span className="text-2xl font-bold">{app.rating.toFixed(1)}</span>
+                    <span className="text-[#666]">({app.review_count} reviews)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {reviews.slice(0, 6).map((review) => (
+                  <div key={review.id} className="border border-[#333] p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <StarRating rating={review.rating} size="sm" />
+                      <ClientBadge client={review.client_used} supported={true} />
+                    </div>
+                    <p className="text-sm text-[#aaa] mb-4 leading-relaxed">{review.comment}</p>
+                    <div className="flex items-center justify-between text-[11px] text-[#666]">
+                      <span>@{review.author}</span>
+                      <span>{new Date(review.date).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Related Apps */}
+        {relatedApps.length > 0 && (
+          <section className="py-12 lg:py-16">
+            <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
+              <span className="text-[10px] tracking-[0.2em] uppercase text-[#666] block mb-8">
+                Related Apps
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {relatedApps.map((relatedApp) => (
+                  <Link
+                    key={relatedApp.id}
+                    href={`/app/${relatedApp.slug}`}
+                    className="group border border-[#333] hover:border-[#dc2626] transition-colors"
+                  >
+                    <div className="relative aspect-[16/10] bg-[#0a0a0a] overflow-hidden">
+                      <Image
+                        src={relatedApp.screenshot_urls?.[0] || "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=250&fit=crop"}
+                        alt={relatedApp.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] tracking-wide uppercase text-[#dc2626]">
+                          {formatCategory(relatedApp.category?.slug || "")}
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <Star className="w-3 h-3 text-white fill-white" />
+                          <span className="text-xs">{relatedApp.rating.toFixed(1)}</span>
+                        </div>
+                      </div>
+                      <h4 className="font-semibold group-hover:text-[#dc2626] transition-colors">
+                        {relatedApp.name}
+                      </h4>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );
