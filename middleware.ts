@@ -2,8 +2,8 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  // Create a response object that we'll modify
-  const response = NextResponse.next({
+  // Create an unmodified response
+  let response = NextResponse.next({
     request: {
       headers: request.headers,
     },
@@ -18,7 +18,17 @@ export async function middleware(request: NextRequest) {
           return request.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
-          // Set cookie on the response
+          // If the cookie is updated, update the cookies for the request and response
+          request.cookies.set({
+            name,
+            value,
+            ...options,
+          });
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          });
           response.cookies.set({
             name,
             value,
@@ -26,6 +36,17 @@ export async function middleware(request: NextRequest) {
           });
         },
         remove(name: string, options: CookieOptions) {
+          // If the cookie is removed, update the cookies for the request and response
+          request.cookies.set({
+            name,
+            value: "",
+            ...options,
+          });
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          });
           response.cookies.set({
             name,
             value: "",
@@ -36,30 +57,15 @@ export async function middleware(request: NextRequest) {
     },
   );
 
-  // IMPORTANT: Refresh the session before checking it
-  // This exchanges the code for a session in OAuth callbacks
-  // and refreshes expired tokens
+  // Refresh session if expired - required for Server Components
+  // https://supabase.com/docs/guides/auth/server-side/nextjs
   const {
-    data: { session },
-    error,
-  } = await supabase.auth.getSession();
-
-  if (error) {
-    console.error("Middleware auth error:", error);
-  }
+    data: { user },
+  } = await supabase.auth.getUser();
 
   // Protect dashboard routes
-  const isProtectedRoute = request.nextUrl.pathname.startsWith("/dashboard");
-
-  if (isProtectedRoute && !session) {
-    const redirectUrl = new URL("/auth/login", request.url);
-    redirectUrl.searchParams.set("redirect", request.nextUrl.pathname);
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  // If user is on login page but already has session, redirect to dashboard
-  if (request.nextUrl.pathname === "/auth/login" && session) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  if (request.nextUrl.pathname.startsWith("/dashboard") && !user) {
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   return response;

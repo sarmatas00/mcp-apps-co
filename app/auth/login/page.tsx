@@ -31,8 +31,9 @@ function LoginForm() {
       return;
     }
 
-    // Success - use window.location for full page redirect to ensure cookies are set
-    window.location.href = redirectTo;
+    // Success - use window.location.replace for full page redirect
+    // This ensures cookies are synced and doesn't add to browser history
+    window.location.replace(redirectTo);
   }
 
   return (

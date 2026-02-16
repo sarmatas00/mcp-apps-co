@@ -7,9 +7,6 @@ export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
 
-  console.log("[OAuth Callback] Code received:", !!code);
-  console.log("[OAuth Callback] Origin:", requestUrl.origin);
-
   if (code) {
     const cookieStore = await cookies();
     const supabase = createServerClient(
@@ -18,27 +15,22 @@ export async function GET(request: NextRequest) {
       {
         cookies: {
           get(name: string) {
-            const value = cookieStore.get(name)?.value;
-            console.log(
-              `[OAuth Callback] Getting cookie: ${name}, exists: ${!!value}`,
-            );
-            return value;
+            return cookieStore.get(name)?.value;
           },
           set(name: string, value: string, options: CookieOptions) {
-            console.log(`[OAuth Callback] Setting cookie: ${name}`);
-            // Ensure cookies are set with proper options
+            // Set cookie with proper options for cross-page access
             cookieStore.set({
               name,
               value,
               ...options,
               path: "/",
               sameSite: "lax",
-              // Don't set secure in development
               secure: process.env.NODE_ENV === "production",
+              // 7 days
+              maxAge: 60 * 60 * 24 * 7,
             });
           },
           remove(name: string, options: CookieOptions) {
-            console.log(`[OAuth Callback] Removing cookie: ${name}`);
             cookieStore.delete({
               name,
               ...options,
@@ -49,15 +41,10 @@ export async function GET(request: NextRequest) {
       },
     );
 
-    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-
-    console.log("[OAuth Callback] Exchange result:", {
-      hasSession: !!data.session,
-      error: error?.message,
-    });
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (error) {
-      console.error("[OAuth Callback] Error:", error);
+      console.error("OAuth callback error:", error);
       return NextResponse.redirect(
         new URL(
           "/auth/login?error=" + encodeURIComponent(error.message),
@@ -65,16 +52,8 @@ export async function GET(request: NextRequest) {
         ),
       );
     }
-
-    if (data.session) {
-      console.log(
-        "[OAuth Callback] Session created for user:",
-        data.session.user.id,
-      );
-    }
   }
 
-  // URL to redirect to after sign in process completes
-  console.log("[OAuth Callback] Redirecting to dashboard");
+  // Redirect to dashboard after successful OAuth
   return NextResponse.redirect(new URL("/dashboard", requestUrl.origin));
 }
