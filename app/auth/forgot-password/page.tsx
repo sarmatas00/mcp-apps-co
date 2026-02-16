@@ -1,29 +1,32 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { OAuthButtons } from "@/components/auth/oauth-buttons";
 
-export default function LoginPage({
+export default function ForgotPasswordPage({
   searchParams,
 }: {
-  searchParams: { error?: string };
+  searchParams: { error?: string; message?: string };
 }) {
-  async function signIn(formData: FormData) {
+  async function resetPassword(formData: FormData) {
     "use server";
 
     const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
 
     const supabase = await createClient();
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/auth/reset-password`,
     });
 
     if (error) {
-      return redirect("/auth/login?error=" + encodeURIComponent(error.message));
+      return redirect(
+        "/auth/forgot-password?error=" + encodeURIComponent(error.message),
+      );
     }
 
-    return redirect("/dashboard");
+    return redirect(
+      "/auth/forgot-password?message=" +
+        encodeURIComponent("Check your email for the reset link"),
+    );
   }
 
   return (
@@ -31,10 +34,10 @@ export default function LoginPage({
       <div className="w-full max-w-md p-8 border border-[#333] bg-[#0a0a0a]">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-black tracking-tight uppercase mb-2">
-            Sign In
+            Reset Password
           </h1>
           <p className="text-sm text-[#666]">
-            Sign in to submit apps and view analytics
+            Enter your email and we&apos;ll send you a reset link
           </p>
         </div>
 
@@ -44,11 +47,13 @@ export default function LoginPage({
           </div>
         )}
 
-        <div className="mb-6">
-          <OAuthButtons mode="signin" />
-        </div>
+        {searchParams?.message && (
+          <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 text-green-400 text-sm">
+            {searchParams.message}
+          </div>
+        )}
 
-        <form action={signIn} className="space-y-6">
+        <form action={resetPassword} className="space-y-6">
           <div>
             <label
               htmlFor="email"
@@ -66,48 +71,22 @@ export default function LoginPage({
             />
           </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-[10px] tracking-[0.15em] uppercase text-[#666] mb-2"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              className="w-full bg-[#1a1a1a] border border-[#333] px-4 py-3 text-white placeholder:text-[#555] focus:border-[#dc2626] focus:outline-none transition-colors"
-              placeholder="••••••••"
-            />
-          </div>
-
-          <div className="flex items-center justify-between text-sm">
-            <a
-              href="/auth/forgot-password"
-              className="text-[#666] hover:text-[#dc2626] transition-colors"
-            >
-              Forgot password?
-            </a>
-          </div>
-
           <button
             type="submit"
             className="w-full bg-[#dc2626] hover:bg-[#b91c1c] text-white py-4 text-sm font-semibold tracking-[0.05em] uppercase transition-colors"
           >
-            Sign In
+            Send Reset Link
           </button>
         </form>
 
         <div className="mt-8 pt-6 border-t border-[#333] text-center">
           <p className="text-sm text-[#666]">
-            Don&apos;t have an account?{" "}
+            Remember your password?{" "}
             <a
-              href="/auth/signup"
+              href="/auth/login"
               className="text-[#dc2626] hover:text-[#b91c1c] transition-colors"
             >
-              Sign up
+              Sign in
             </a>
           </p>
         </div>

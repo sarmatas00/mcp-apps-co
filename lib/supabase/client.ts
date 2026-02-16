@@ -1,6 +1,13 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./database.types";
-import type { App, Category, CategoryWithCount, Review } from "./types";
+import type {
+  App,
+  Category,
+  CategoryWithCount,
+  Review,
+  Profile,
+  OAuthProvider,
+} from "./types";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -12,6 +19,178 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
+
+// ==================== AUTH FUNCTIONS (v1.1.0) ====================
+
+export async function signInWithEmail(email: string, password: string) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  return { data, error };
+}
+
+export async function signUpWithEmail(
+  email: string,
+  password: string,
+  fullName: string,
+) {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: fullName,
+      },
+    },
+  });
+  return { data, error };
+}
+
+export async function signInWithOAuth(provider: OAuthProvider) {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo: `${window.location.origin}/auth/callback`,
+    },
+  });
+  return { data, error };
+}
+
+export async function signOut() {
+  const { error } = await supabase.auth.signOut();
+  return { error };
+}
+
+export async function resetPassword(email: string) {
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/auth/reset-password`,
+  });
+  return { data, error };
+}
+
+export async function updatePassword(newPassword: string) {
+  const { data, error } = await supabase.auth.updateUser({
+    password: newPassword,
+  });
+  return { data, error };
+}
+
+// ==================== PROFILE FUNCTIONS (v1.1.0) ====================
+
+export async function getProfile(userId: string): Promise<Profile | null> {
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .single();
+
+    if (error) {
+      console.error("Error fetching profile:", error);
+      return null;
+    }
+
+    return data as Profile;
+  } catch (err) {
+    console.error("Supabase error:", err);
+    return null;
+  }
+}
+
+export async function updateProfile(userId: string, updates: Partial<Profile>) {
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .update(updates)
+      .eq("id", userId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error updating profile:", error);
+      return { data: null, error };
+    }
+
+    return { data: data as Profile, error: null };
+  } catch (err) {
+    console.error("Supabase error:", err);
+    return { data: null, error: err };
+  }
+}
+
+export async function uploadAvatar(userId: string, file: File) {
+  try {
+    const fileExt = file.name.split(".").pop();
+    const filePath = `${userId}/avatar.${fileExt}`;
+
+    // Upload to storage
+    const { error: uploadError } = await supabase.storage
+      .from("avatars")
+      .upload(filePath, file, { upsert: true });
+
+    if (uploadError) {
+      console.error("Error uploading avatar:", uploadError);
+      return { data: null, error: uploadError };
+    }
+
+    // Update profile with avatar path
+    const { data, error: updateError } = await updateProfile(userId, {
+      avatar_url: filePath,
+    });
+
+    if (updateError) {
+      return { data: null, error: updateError };
+    }
+
+    return { data, error: null };
+  } catch (err) {
+    console.error("Supabase error:", err);
+    return { data: null, error: err };
+  }
+}
+
+export async function getAvatarUrl(filePath: string) {
+  try {
+    const { data, error } = await supabase.storage
+      .from("avatars")
+      .createSignedUrl(filePath, 3600); // 1 hour expiry
+
+    if (error) {
+      console.error("Error creating signed URL:", error);
+      return null;
+    }
+
+    return data.signedUrl;
+  } catch (err) {
+    console.error("Supabase error:", err);
+    return null;
+  }
+}
+
+export async function deleteAvatar(userId: string, filePath: string) {
+  try {
+    // Delete from storage
+    const { error: deleteError } = await supabase.storage
+      .from("avatars")
+      .remove([filePath]);
+
+    if (deleteError) {
+      console.error("Error deleting avatar:", deleteError);
+      return { error: deleteError };
+    }
+
+    // Update profile to remove avatar_url
+    const { error: updateError } = await updateProfile(userId, {
+      avatar_url: null,
+    });
+
+    return { error: updateError };
+  } catch (err) {
+    console.error("Supabase error:", err);
+    return { error: err };
+  }
+}
 
 // Helper function for server components
 export async function getApps(): Promise<App[]> {

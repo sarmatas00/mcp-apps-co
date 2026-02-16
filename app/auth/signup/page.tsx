@@ -1,13 +1,18 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { OAuthButtons } from "@/components/auth/oauth-buttons";
 
-export default function SignUpPage() {
+export default function SignUpPage({
+  searchParams,
+}: {
+  searchParams: { error?: string; message?: string };
+}) {
   async function signUp(formData: FormData) {
     "use server";
 
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
-    const name = formData.get("name") as string;
+    const fullName = formData.get("fullName") as string;
 
     const supabase = await createClient();
 
@@ -16,7 +21,7 @@ export default function SignUpPage() {
       password,
       options: {
         data: {
-          name,
+          full_name: fullName,
         },
       },
     });
@@ -27,16 +32,18 @@ export default function SignUpPage() {
       );
     }
 
-    // Create developer profile
+    // Profile is automatically created via database trigger
+    // But we update it with additional info if needed
     if (authData.user) {
-      const { error: profileError } = await supabase.from("developers").insert({
-        id: authData.user.id,
-        name,
-        email,
-      });
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({
+          full_name: fullName,
+        })
+        .eq("id", authData.user.id);
 
       if (profileError) {
-        console.error("Error creating developer profile:", profileError);
+        console.error("Error updating profile:", profileError);
       }
     }
 
@@ -47,30 +54,48 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#111] text-white flex items-center justify-center">
-      <div className="w-full max-w-md p-8 border border-[#333]">
+    <div className="min-h-screen bg-[#111] text-white flex items-center justify-center p-4">
+      <div className="w-full max-w-md p-8 border border-[#333] bg-[#0a0a0a]">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-black tracking-tight uppercase mb-2">
             Create Account
           </h1>
-          <p className="text-sm text-[#666]">Sign up to submit your MCP apps</p>
+          <p className="text-sm text-[#666]">
+            Sign up to submit apps and view analytics
+          </p>
+        </div>
+
+        {searchParams?.error && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+            {searchParams.error}
+          </div>
+        )}
+
+        {searchParams?.message && (
+          <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 text-green-400 text-sm">
+            {searchParams.message}
+          </div>
+        )}
+
+        <div className="mb-6">
+          <OAuthButtons mode="signup" />
         </div>
 
         <form action={signUp} className="space-y-6">
           <div>
             <label
-              htmlFor="name"
+              htmlFor="fullName"
               className="block text-[10px] tracking-[0.15em] uppercase text-[#666] mb-2"
             >
-              Name
+              Full Name
             </label>
             <input
-              id="name"
-              name="name"
+              id="fullName"
+              name="fullName"
               type="text"
               required
               className="w-full bg-[#1a1a1a] border border-[#333] px-4 py-3 text-white placeholder:text-[#555] focus:border-[#dc2626] focus:outline-none transition-colors"
-              placeholder="Your name"
+              placeholder="Your full name"
             />
           </div>
 
@@ -117,7 +142,7 @@ export default function SignUpPage() {
           </button>
         </form>
 
-        <div className="mt-8 text-center">
+        <div className="mt-8 pt-6 border-t border-[#333] text-center">
           <p className="text-sm text-[#666]">
             Already have an account?{" "}
             <a
