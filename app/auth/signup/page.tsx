@@ -1,12 +1,7 @@
-import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
-import { OAuthButtons } from "@/components/auth/oauth-buttons";
-
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { OAuthButtons } from "@/components/auth/oauth-buttons";
 import { signUpWithEmail } from "@/lib/supabase/client";
 
@@ -15,10 +10,13 @@ export default function SignUpPage({
 }: {
   searchParams: { error?: string; message?: string };
 }) {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(searchParams?.error || null);
-  const [message, setMessage] = useState<string | null>(searchParams?.message || null);
+  const [error, setError] = useState<string | null>(
+    searchParams?.error || null,
+  );
+  const [message, setMessage] = useState<string | null>(
+    searchParams?.message || null,
+  );
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -31,7 +29,11 @@ export default function SignUpPage({
     const password = formData.get("password") as string;
     const fullName = formData.get("fullName") as string;
 
-    const { data, error: signUpError } = await signUpWithEmail(email, password, fullName);
+    const { data, error: signUpError } = await signUpWithEmail(
+      email,
+      password,
+      fullName,
+    );
 
     if (signUpError) {
       setError(signUpError.message);
@@ -40,56 +42,14 @@ export default function SignUpPage({
     }
 
     if (data?.user) {
-      setMessage("Account created! Please check your email to confirm your account.");
+      setMessage(
+        "Account created! Please check your email to confirm your account.",
+      );
       // Clear the form
       e.currentTarget.reset();
     }
 
     setIsLoading(false);
-  }
-    "use server";
-
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const fullName = formData.get("fullName") as string;
-
-    const supabase = await createClient();
-
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-        },
-      },
-    });
-
-    if (authError) {
-      return redirect(
-        "/auth/signup?error=" + encodeURIComponent(authError.message),
-      );
-    }
-
-    // Profile is automatically created via database trigger
-    // But we update it with additional info if needed
-    if (authData.user) {
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .update({
-          full_name: fullName,
-        })
-        .eq("id", authData.user.id);
-
-      if (profileError) {
-        console.error("Error updating profile:", profileError);
-      }
-    }
-
-    return redirect(
-      "/auth/login?message=" +
-        encodeURIComponent("Check your email to confirm your account"),
-    );
   }
 
   return (
