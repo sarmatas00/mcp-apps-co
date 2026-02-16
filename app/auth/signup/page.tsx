@@ -43,7 +43,11 @@ export default function SignUpPage({
 
     if (data?.user) {
       setMessage(
-        "Account created! Please check your email to confirm your account.",
+        `✓ Account created successfully!
+
+📧 Check your email (${email}) for a confirmation link.
+🔒 You must confirm your email before logging in.
+⏱️ The confirmation link expires in 1 hour.`,
       );
       // Clear the form
       e.currentTarget.reset();
@@ -71,7 +75,7 @@ export default function SignUpPage({
         )}
 
         {message && (
-          <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 text-green-400 text-sm">
+          <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 text-green-400 text-sm whitespace-pre-line">
             {message}
           </div>
         )}
