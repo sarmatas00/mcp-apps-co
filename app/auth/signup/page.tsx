@@ -51,6 +51,8 @@ export default function SignUpPage({
       );
       // Clear the form
       e.currentTarget.reset();
+      setIsLoading(false);
+      return;
     }
 
     setIsLoading(false);

@@ -31,9 +31,8 @@ function LoginForm() {
       return;
     }
 
-    // Success - redirect to original destination or dashboard
-    router.push(redirectTo);
-    router.refresh();
+    // Success - use window.location for full page redirect to ensure cookies are set
+    window.location.href = redirectTo;
   }
 
   return (
