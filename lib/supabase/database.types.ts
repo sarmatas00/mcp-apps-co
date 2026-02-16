@@ -87,8 +87,24 @@ export type Database = {
           created_at: string;
           updated_at: string;
         };
-        Insert: Record<string, unknown>;
-        Update: Record<string, unknown>;
+        Insert: {
+          id: string;
+          full_name?: string | null;
+          avatar_url?: string | null;
+          bio?: string | null;
+          website?: string | null;
+          github_username?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          full_name?: string | null;
+          avatar_url?: string | null;
+          bio?: string | null;
+          website?: string | null;
+          github_username?: string | null;
+          updated_at?: string;
+        };
       };
       reviews: {
         Row: {
