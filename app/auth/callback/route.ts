@@ -6,7 +6,7 @@ import type { CookieOptions } from "@supabase/ssr";
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  
+
   console.log("[OAuth Callback] Code received:", !!code);
   console.log("[OAuth Callback] Origin:", requestUrl.origin);
 
@@ -19,7 +19,9 @@ export async function GET(request: NextRequest) {
         cookies: {
           get(name: string) {
             const value = cookieStore.get(name)?.value;
-            console.log(`[OAuth Callback] Getting cookie: ${name}, exists: ${!!value}`);
+            console.log(
+              `[OAuth Callback] Getting cookie: ${name}, exists: ${!!value}`,
+            );
             return value;
           },
           set(name: string, value: string, options: CookieOptions) {
@@ -48,7 +50,7 @@ export async function GET(request: NextRequest) {
     );
 
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-    
+
     console.log("[OAuth Callback] Exchange result:", {
       hasSession: !!data.session,
       error: error?.message,
@@ -63,9 +65,12 @@ export async function GET(request: NextRequest) {
         ),
       );
     }
-    
+
     if (data.session) {
-      console.log("[OAuth Callback] Session created for user:", data.session.user.id);
+      console.log(
+        "[OAuth Callback] Session created for user:",
+        data.session.user.id,
+      );
     }
   }
 

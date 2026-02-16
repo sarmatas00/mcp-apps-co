@@ -8,11 +8,14 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   console.log("[Dashboard] Loading layout...");
-  
+
   const supabase = await createClient();
-  
+
   // Get session - this will refresh if needed
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  const {
+    data: { session },
+    error: sessionError,
+  } = await supabase.auth.getSession();
 
   console.log("[Dashboard] Session exists:", !!session);
   console.log("[Dashboard] Session error:", sessionError?.message);
