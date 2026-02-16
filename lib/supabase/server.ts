@@ -10,20 +10,24 @@ export async function createClient() {
     {
       cookies: {
         get(name: string) {
-          return cookieStore.get(name)?.value;
+          const cookie = cookieStore.get(name);
+          console.log(`[Server] Getting cookie: ${name}, exists: ${!!cookie}`);
+          return cookie?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
           try {
+            console.log(`[Server] Setting cookie: ${name}`);
             cookieStore.set({ name, value, ...options });
           } catch (error) {
-            // Handle error
+            console.error(`[Server] Error setting cookie ${name}:`, error);
           }
         },
         remove(name: string, options: CookieOptions) {
           try {
+            console.log(`[Server] Removing cookie: ${name}`);
             cookieStore.set({ name, value: "", ...options });
           } catch (error) {
-            // Handle error
+            console.error(`[Server] Error removing cookie ${name}:`, error);
           }
         },
       },

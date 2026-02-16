@@ -7,19 +7,23 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  console.log("[Dashboard] Loading layout...");
+  
   const supabase = await createClient();
-
+  
   // Get session - this will refresh if needed
-  const {
-    data: { session },
-    error: sessionError,
-  } = await supabase.auth.getSession();
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+  console.log("[Dashboard] Session exists:", !!session);
+  console.log("[Dashboard] Session error:", sessionError?.message);
+  console.log("[Dashboard] User ID:", session?.user?.id);
 
   if (sessionError) {
-    console.error("Dashboard session error:", sessionError);
+    console.error("[Dashboard] Session error:", sessionError);
   }
 
   if (!session) {
+    console.log("[Dashboard] No session, redirecting to login");
     redirect("/auth/login?redirect=/dashboard");
   }
 
@@ -31,7 +35,7 @@ export default async function DashboardLayout({
     .single();
 
   if (profileError) {
-    console.error("Profile fetch error:", profileError);
+    console.error("[Dashboard] Profile fetch error:", profileError);
   }
 
   const user = {
