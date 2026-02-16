@@ -6,8 +6,10 @@ import type {
   CategoryWithCount,
   Review,
   Profile,
-  OAuthProvider,
 } from "./types";
+
+// Re-export types for convenience
+export type { OAuthProvider } from "./types";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
