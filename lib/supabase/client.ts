@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 import type { Database } from "./database.types";
 import type {
   App,
@@ -21,7 +21,8 @@ if (!supabaseUrl || !supabaseKey) {
   );
 }
 
-export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
+// Use createBrowserClient for proper cookie-based auth
+export const supabase = createBrowserClient<Database>(supabaseUrl, supabaseKey);
 
 // ==================== AUTH FUNCTIONS (v1.1.0) ====================
 
@@ -202,7 +203,8 @@ export async function deleteAvatar(userId: string, filePath: string) {
   }
 }
 
-// Helper function for server components
+// ==================== APP FUNCTIONS ====================
+
 export async function getApps(): Promise<App[]> {
   try {
     const { data, error } = await supabase
