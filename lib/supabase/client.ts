@@ -6,6 +6,7 @@ import type {
   CategoryWithCount,
   Review,
   Profile,
+  OAuthProvider,
 } from "./types";
 
 // Re-export types for convenience
