@@ -17,34 +17,39 @@ export async function middleware(request: NextRequest) {
           return request.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
+          // Update request cookies
           request.cookies.set({ name, value, ...options });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
+          // Update response cookies
           response.cookies.set({ name, value, ...options });
         },
         remove(name: string, options: CookieOptions) {
           request.cookies.set({ name, value: "", ...options });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
           response.cookies.set({ name, value: "", ...options });
         },
       },
     },
   );
 
-  await supabase.auth.getSession();
+  // Refresh session if expired - required for Server Components
+  // https://supabase.com/docs/guides/auth/auth-helpers/nextjs#managing-session-with-middleware
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  // Optional: Check protected routes and redirect if not authenticated
+  // This is handled in the layout, but we could do it here too for early redirect
+  const isProtectedRoute = request.nextUrl.pathname.startsWith("/dashboard");
+
+  if (isProtectedRoute && !session) {
+    const redirectUrl = new URL("/auth/login", request.url);
+    return NextResponse.redirect(redirectUrl);
+  }
 
   return response;
 }
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

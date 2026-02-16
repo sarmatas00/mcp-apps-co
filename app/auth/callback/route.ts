@@ -18,16 +18,37 @@ export async function GET(request: NextRequest) {
             return cookieStore.get(name)?.value;
           },
           set(name: string, value: string, options: CookieOptions) {
-            cookieStore.set({ name, value, ...options });
+            // Ensure cookies are set with proper options
+            cookieStore.set({
+              name,
+              value,
+              ...options,
+              path: "/",
+              sameSite: "lax",
+            });
           },
           remove(name: string, options: CookieOptions) {
-            cookieStore.delete({ name, ...options });
+            cookieStore.delete({
+              name,
+              ...options,
+              path: "/",
+            });
           },
         },
       },
     );
 
-    await supabase.auth.exchangeCodeForSession(code);
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (error) {
+      console.error("OAuth callback error:", error);
+      return NextResponse.redirect(
+        new URL(
+          "/auth/login?error=" + encodeURIComponent(error.message),
+          requestUrl.origin,
+        ),
+      );
+    }
   }
 
   // URL to redirect to after sign in process completes
