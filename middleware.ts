@@ -2,6 +2,7 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
+  // Create a response object that we'll modify
   const response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -17,32 +18,48 @@ export async function middleware(request: NextRequest) {
           return request.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
-          // Update request cookies
-          request.cookies.set({ name, value, ...options });
-          // Update response cookies
-          response.cookies.set({ name, value, ...options });
+          // Set cookie on the response
+          response.cookies.set({
+            name,
+            value,
+            ...options,
+          });
         },
         remove(name: string, options: CookieOptions) {
-          request.cookies.set({ name, value: "", ...options });
-          response.cookies.set({ name, value: "", ...options });
+          response.cookies.set({
+            name,
+            value: "",
+            ...options,
+          });
         },
       },
     },
   );
 
-  // Refresh session if expired - required for Server Components
-  // https://supabase.com/docs/guides/auth/auth-helpers/nextjs#managing-session-with-middleware
+  // IMPORTANT: Refresh the session before checking it
+  // This exchanges the code for a session in OAuth callbacks
+  // and refreshes expired tokens
   const {
     data: { session },
+    error,
   } = await supabase.auth.getSession();
 
-  // Optional: Check protected routes and redirect if not authenticated
-  // This is handled in the layout, but we could do it here too for early redirect
+  if (error) {
+    console.error("Middleware auth error:", error);
+  }
+
+  // Protect dashboard routes
   const isProtectedRoute = request.nextUrl.pathname.startsWith("/dashboard");
 
   if (isProtectedRoute && !session) {
     const redirectUrl = new URL("/auth/login", request.url);
+    redirectUrl.searchParams.set("redirect", request.nextUrl.pathname);
     return NextResponse.redirect(redirectUrl);
+  }
+
+  // If user is on login page but already has session, redirect to dashboard
+  if (request.nextUrl.pathname === "/auth/login" && session) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return response;

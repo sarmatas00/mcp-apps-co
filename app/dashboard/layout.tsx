@@ -8,20 +8,31 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const supabase = await createClient();
+
+  // Get session - this will refresh if needed
   const {
     data: { session },
+    error: sessionError,
   } = await supabase.auth.getSession();
 
+  if (sessionError) {
+    console.error("Dashboard session error:", sessionError);
+  }
+
   if (!session) {
-    redirect("/auth/login");
+    redirect("/auth/login?redirect=/dashboard");
   }
 
   // Get user profile
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", session.user.id)
     .single();
+
+  if (profileError) {
+    console.error("Profile fetch error:", profileError);
+  }
 
   const user = {
     id: session.user.id,

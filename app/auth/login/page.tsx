@@ -2,29 +2,22 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { OAuthButtons } from "@/components/auth/oauth-buttons";
 import { signInWithEmail } from "@/lib/supabase/client";
 
-export default function LoginPage({
-  searchParams,
-}: {
-  searchParams: { error?: string; message?: string };
-}) {
+export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/dashboard";
+
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(
-    searchParams?.error || null,
-  );
-  const [message, setMessage] = useState<string | null>(
-    searchParams?.message || null,
-  );
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
-    setMessage(null);
 
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
@@ -38,8 +31,8 @@ export default function LoginPage({
       return;
     }
 
-    // Success - redirect to dashboard
-    router.push("/dashboard");
+    // Success - redirect to original destination or dashboard
+    router.push(redirectTo);
     router.refresh();
   }
 
@@ -58,12 +51,6 @@ export default function LoginPage({
         {error && (
           <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
             {error}
-          </div>
-        )}
-
-        {message && (
-          <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 text-green-400 text-sm">
-            {message}
           </div>
         )}
 
