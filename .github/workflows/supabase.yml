@@ -21,11 +21,34 @@ jobs:
         with:
           version: latest
 
+      - name: Check required secrets
+        run: |
+          if [ -z "${{ secrets.SUPABASE_ACCESS_TOKEN }}" ]; then
+            echo "❌ Error: SUPABASE_ACCESS_TOKEN secret is not set"
+            echo "Please add it in GitHub Settings → Secrets and variables → Actions"
+            exit 1
+          fi
+          if [ -z "${{ secrets.SUPABASE_PROJECT_REF }}" ]; then
+            echo "❌ Error: SUPABASE_PROJECT_REF secret is not set"
+            echo "Find it in your Supabase Dashboard → Project Settings → General"
+            exit 1
+          fi
+          if [ -z "${{ secrets.SUPABASE_DB_PASSWORD }}" ]; then
+            echo "❌ Error: SUPABASE_DB_PASSWORD secret is not set"
+            echo "Set it in your Supabase Dashboard → Database → Connection pooling"
+            exit 1
+          fi
+          echo "✅ All required secrets are configured"
+
+      - name: Link Supabase project
+        run: |
+          supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
       - name: Deploy migrations to production
         run: |
-          supabase link --project-ref $SUPABASE_PROJECT_REF
           supabase db push
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}

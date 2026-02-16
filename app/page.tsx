@@ -3,6 +3,7 @@ import Link from "next/link";
 import { AppCard, AppGrid } from "@/components/app-card";
 import { SearchCommand } from "@/components/search-command";
 import { CategoryFilter } from "@/components/category-filter";
+import { AuthNav } from "@/components/auth/auth-nav";
 import { getApps, getCategories } from "@/lib/supabase/client";
 import type { App } from "@/lib/supabase/types";
 
@@ -57,20 +58,23 @@ export default async function Home() {
       <nav className="border-b border-[#333]">
         <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12">
           <div className="flex h-16 items-center justify-between gap-4">
-            <div className="flex items-center gap-4 flex-shrink-0">
+            <Link href="/" className="flex items-center gap-4 flex-shrink-0">
               <span className="text-xs font-medium tracking-[0.2em] uppercase text-[#666]">
                 MCP
               </span>
               <span className="text-sm font-semibold tracking-tight">APPS</span>
-            </div>
+            </Link>
             <div className="flex-1 max-w-md hidden sm:block">
               <SearchCommand />
             </div>
-            <div className="flex items-center gap-8 flex-shrink-0">
-              <span className="text-xs font-medium tracking-[0.1em] uppercase text-[#666] hidden lg:inline">
-                Swiss Studio
-              </span>
-              <div className="w-2 h-2 bg-[#dc2626]" />
+            <div className="flex items-center gap-6 flex-shrink-0">
+              <Link
+                href="/blog"
+                className="text-xs font-medium tracking-[0.1em] uppercase text-[#666] hover:text-white transition-colors hidden sm:inline"
+              >
+                Blog
+              </Link>
+              <AuthNav />
             </div>
           </div>
         </div>
