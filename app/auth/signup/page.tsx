@@ -2,12 +2,51 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { OAuthButtons } from "@/components/auth/oauth-buttons";
 
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { OAuthButtons } from "@/components/auth/oauth-buttons";
+import { signUpWithEmail } from "@/lib/supabase/client";
+
 export default function SignUpPage({
   searchParams,
 }: {
   searchParams: { error?: string; message?: string };
 }) {
-  async function signUp(formData: FormData) {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(searchParams?.error || null);
+  const [message, setMessage] = useState<string | null>(searchParams?.message || null);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    setMessage(null);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const fullName = formData.get("fullName") as string;
+
+    const { data, error: signUpError } = await signUpWithEmail(email, password, fullName);
+
+    if (signUpError) {
+      setError(signUpError.message);
+      setIsLoading(false);
+      return;
+    }
+
+    if (data?.user) {
+      setMessage("Account created! Please check your email to confirm your account.");
+      // Clear the form
+      e.currentTarget.reset();
+    }
+
+    setIsLoading(false);
+  }
     "use server";
 
     const email = formData.get("email") as string;
@@ -65,15 +104,15 @@ export default function SignUpPage({
           </p>
         </div>
 
-        {searchParams?.error && (
+        {error && (
           <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
-            {searchParams.error}
+            {error}
           </div>
         )}
 
-        {searchParams?.message && (
+        {message && (
           <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 text-green-400 text-sm">
-            {searchParams.message}
+            {message}
           </div>
         )}
 
@@ -81,7 +120,7 @@ export default function SignUpPage({
           <OAuthButtons mode="signup" />
         </div>
 
-        <form action={signUp} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
               htmlFor="fullName"
@@ -136,21 +175,22 @@ export default function SignUpPage({
 
           <button
             type="submit"
-            className="w-full bg-[#dc2626] hover:bg-[#b91c1c] text-white py-4 text-sm font-semibold tracking-[0.05em] uppercase transition-colors"
+            disabled={isLoading}
+            className="w-full bg-[#dc2626] hover:bg-[#b91c1c] disabled:bg-[#666] text-white py-4 text-sm font-semibold tracking-[0.05em] uppercase transition-colors disabled:cursor-not-allowed"
           >
-            Create Account
+            {isLoading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 
         <div className="mt-8 pt-6 border-t border-[#333] text-center">
           <p className="text-sm text-[#666]">
             Already have an account?{" "}
-            <a
+            <Link
               href="/auth/login"
               className="text-[#dc2626] hover:text-[#b91c1c] transition-colors"
             >
               Sign in
-            </a>
+            </Link>
           </p>
         </div>
       </div>

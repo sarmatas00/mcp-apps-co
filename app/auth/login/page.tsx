@@ -1,29 +1,46 @@
-import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { OAuthButtons } from "@/components/auth/oauth-buttons";
+import { signInWithEmail } from "@/lib/supabase/client";
 
 export default function LoginPage({
   searchParams,
 }: {
-  searchParams: { error?: string };
+  searchParams: { error?: string; message?: string };
 }) {
-  async function signIn(formData: FormData) {
-    "use server";
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(
+    searchParams?.error || null,
+  );
+  const [message, setMessage] = useState<string | null>(
+    searchParams?.message || null,
+  );
 
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    setMessage(null);
+
+    const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    const supabase = await createClient();
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error: signInError } = await signInWithEmail(email, password);
 
-    if (error) {
-      return redirect("/auth/login?error=" + encodeURIComponent(error.message));
+    if (signInError) {
+      setError(signInError.message);
+      setIsLoading(false);
+      return;
     }
 
-    return redirect("/dashboard");
+    // Success - redirect to dashboard
+    router.push("/dashboard");
+    router.refresh();
   }
 
   return (
@@ -38,9 +55,15 @@ export default function LoginPage({
           </p>
         </div>
 
-        {searchParams?.error && (
+        {error && (
           <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
-            {searchParams.error}
+            {error}
+          </div>
+        )}
+
+        {message && (
+          <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 text-green-400 text-sm">
+            {message}
           </div>
         )}
 
@@ -48,7 +71,7 @@ export default function LoginPage({
           <OAuthButtons mode="signin" />
         </div>
 
-        <form action={signIn} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
               htmlFor="email"
@@ -84,31 +107,32 @@ export default function LoginPage({
           </div>
 
           <div className="flex items-center justify-between text-sm">
-            <a
+            <Link
               href="/auth/forgot-password"
               className="text-[#666] hover:text-[#dc2626] transition-colors"
             >
               Forgot password?
-            </a>
+            </Link>
           </div>
 
           <button
             type="submit"
-            className="w-full bg-[#dc2626] hover:bg-[#b91c1c] text-white py-4 text-sm font-semibold tracking-[0.05em] uppercase transition-colors"
+            disabled={isLoading}
+            className="w-full bg-[#dc2626] hover:bg-[#b91c1c] disabled:bg-[#666] text-white py-4 text-sm font-semibold tracking-[0.05em] uppercase transition-colors disabled:cursor-not-allowed"
           >
-            Sign In
+            {isLoading ? "Signing In..." : "Sign In"}
           </button>
         </form>
 
         <div className="mt-8 pt-6 border-t border-[#333] text-center">
           <p className="text-sm text-[#666]">
             Don&apos;t have an account?{" "}
-            <a
+            <Link
               href="/auth/signup"
               className="text-[#dc2626] hover:text-[#b91c1c] transition-colors"
             >
               Sign up
-            </a>
+            </Link>
           </p>
         </div>
       </div>
