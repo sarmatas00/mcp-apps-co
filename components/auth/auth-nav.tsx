@@ -15,6 +15,17 @@ export function AuthNav() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    async function fetchProfile(userId: string, email: string) {
+      const { data } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+      setUser({ id: userId, email, profile: data });
+      setLoading(false);
+    }
+
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
@@ -38,17 +49,6 @@ export function AuthNav() {
 
     return () => subscription.unsubscribe();
   }, []);
-
-  async function fetchProfile(userId: string, email: string) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
-
-    setUser({ id: userId, email, profile: data });
-    setLoading(false);
-  }
 
   if (loading) {
     return (
