@@ -105,8 +105,7 @@ export async function updateProfile(userId: string, updates: Partial<Profile>) {
   try {
     const { data, error } = await supabase
       .from("profiles")
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .update(updates as any)
+      .update(updates as Record<string, string | null>)
       .eq("id", userId)
       .select()
       .single();
