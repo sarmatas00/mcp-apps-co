@@ -1,7 +1,9 @@
 # Research Report: Supabase Auth Best Practices for Next.js 15
 
 ## Date: 2026-02-16
+
 ## Version: v1.1.0
+
 ## Topic: Comprehensive Auth System with Email, Google, GitHub OAuth + User Profiles
 
 ---
@@ -9,6 +11,7 @@
 ## 1. Key Findings Summary
 
 ### Recommended Stack
+
 - **Package**: `@supabase/ssr` for Next.js 15 (replaces older auth-helpers)
 - **Session**: Cookie-based with automatic refresh
 - **Security**: Server-side validation prioritized (post-CVE-2025-29927)
@@ -19,16 +22,19 @@
 ## 2. Authentication Methods
 
 ### Email/Password
+
 - Enable in Supabase Dashboard → Authentication → Providers
 - Use `supabase.auth.signUp()` and `signInWithPassword()`
 - Email confirmation required for production
 
 ### OAuth Providers (Google, GitHub)
+
 - Configure in Supabase Dashboard with callback URLs
 - Implement via `signInWithOAuth({ provider: 'google' | 'github' })`
 - Set up OAuth apps in Google Cloud Console and GitHub Developer Settings
 
 **Callback URLs:**
+
 - Local: `http://localhost:3000/auth/callback`
 - Production: `https://mcp-apps.co/auth/callback`
 
@@ -37,6 +43,7 @@
 ## 3. Database Schema
 
 ### Profiles Table
+
 ```sql
 CREATE TABLE profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -51,20 +58,21 @@ CREATE TABLE profiles (
 ```
 
 ### RLS Policies for Profiles
+
 ```sql
 -- Enable RLS
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
 -- Users can view own profile
-CREATE POLICY "Users can view own profile" ON profiles 
+CREATE POLICY "Users can view own profile" ON profiles
 FOR SELECT TO authenticated USING (auth.uid() = id);
 
 -- Users can update own profile
-CREATE POLICY "Users can update own profile" ON profiles 
+CREATE POLICY "Users can update own profile" ON profiles
 FOR UPDATE TO authenticated USING (auth.uid() = id);
 
 -- Users can insert own profile
-CREATE POLICY "Users can insert own profile" ON profiles 
+CREATE POLICY "Users can insert own profile" ON profiles
 FOR INSERT TO authenticated WITH CHECK (auth.uid() = id);
 ```
 
@@ -73,11 +81,13 @@ FOR INSERT TO authenticated WITH CHECK (auth.uid() = id);
 ## 4. Storage Configuration
 
 ### Avatars Bucket
+
 - Create private bucket named `avatars`
 - Folder structure: `{user-uuid}/avatar.png`
 - Store only path in profiles table, not full URL
 
 ### RLS Policies for Storage
+
 ```sql
 -- Enable RLS on storage.objects
 ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
@@ -106,9 +116,10 @@ FOR DELETE TO authenticated USING (
 ## 5. Next.js 15 Implementation Pattern
 
 ### Server Client (createClient.ts)
+
 ```typescript
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -117,23 +128,26 @@ export async function createClient() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name) { return cookieStore.get(name)?.value; },
-        set(name, value, options) { 
-          cookieStore.set({ name, value, ...options }); 
+        get(name) {
+          return cookieStore.get(name)?.value;
         },
-        remove(name, options) { 
-          cookieStore.delete({ name, ...options }); 
+        set(name, value, options) {
+          cookieStore.set({ name, value, ...options });
+        },
+        remove(name, options) {
+          cookieStore.delete({ name, ...options });
         },
       },
-    }
+    },
   );
 }
 ```
 
 ### Middleware Pattern
+
 ```typescript
-import { createServerClient } from '@supabase/ssr';
-import { NextResponse } from 'next/server';
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse } from "next/server";
 
 export async function middleware(request) {
   const supabase = createServerClient(
@@ -141,7 +155,9 @@ export async function middleware(request) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
-        get(name) { return request.cookies.get(name)?.value; },
+        get(name) {
+          return request.cookies.get(name)?.value;
+        },
         set(name, value, options) {
           request.cookies.set({ name, value, ...options });
         },
@@ -149,16 +165,18 @@ export async function middleware(request) {
           request.cookies.delete({ name, ...options });
         },
       },
-    }
+    },
   );
-  
-  const { data: { session } } = await supabase.auth.getSession();
-  
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
   // Protect routes
-  if (!session && request.nextUrl.pathname.startsWith('/dashboard')) {
-    return NextResponse.redirect(new URL('/auth/login', request.url));
+  if (!session && request.nextUrl.pathname.startsWith("/dashboard")) {
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
-  
+
   return NextResponse.next();
 }
 ```
@@ -179,17 +197,21 @@ export async function middleware(request) {
 ## 7. Avatar Handling
 
 ### Upload Flow
+
 1. User selects image
 2. Upload to `avatars/{user-id}/avatar.png`
 3. Update `profiles.avatar_url` with path
 4. Generate signed URL for display
 
 ### Display
+
 ```typescript
-const { data: { signedUrl } } = await supabase.storage
-  .from('avatars')
+const {
+  data: { signedUrl },
+} = await supabase.storage
+  .from("avatars")
   .createSignedUrl(profile.avatar_url, 3600, {
-    transform: { width: 100, height: 100 }
+    transform: { width: 100, height: 100 },
   });
 ```
 
@@ -198,6 +220,7 @@ const { data: { signedUrl } } = await supabase.storage
 ## 8. Auth Flow Design
 
 ### Public Routes (No Auth Required)
+
 - `/` - Homepage
 - `/app/[slug]` - App details
 - `/category/[slug]` - Categories
@@ -207,6 +230,7 @@ const { data: { signedUrl } } = await supabase.storage
 - `/auth/callback` - OAuth callback
 
 ### Protected Routes (Auth Required)
+
 - `/dashboard` - User dashboard
 - `/dashboard/settings` - Profile settings
 - `/submit` - Submit app (already protected)
@@ -218,6 +242,7 @@ const { data: { signedUrl } } = await supabase.storage
 ## Recommendation for Architect
 
 Implement a complete auth system with:
+
 1. **Supabase SSR client** with proper cookie handling
 2. **Middleware** for route protection
 3. **Database migrations** for profiles table and RLS
@@ -228,6 +253,7 @@ Implement a complete auth system with:
 8. **Profile management** (name, bio, website)
 
 Sources:
+
 - https://github.com/orgs/supabase/discussions/18877
 - https://docs.zeroqode.com/plugins/supabase-pro-kit/quickstart/
 - https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs

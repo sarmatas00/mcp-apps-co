@@ -1,11 +1,13 @@
 # Architecture Report: Complete Auth System v1.1.0
 
 ## Overview
+
 Design for comprehensive authentication system with Email/Password, Google OAuth, GitHub OAuth, user profiles, and avatar management.
 
 ## Current State Analysis
 
 ### Existing Infrastructure
+
 - ✅ Supabase client configured with SSR (@supabase/ssr)
 - ✅ Basic email/password auth pages exist
 - ✅ Middleware for session handling
@@ -20,6 +22,7 @@ Design for comprehensive authentication system with Email/Password, Google OAuth
 ### 1. Database Schema
 
 #### Profiles Table (New)
+
 ```sql
 CREATE TABLE profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -46,6 +49,7 @@ CREATE POLICY "Users can insert own profile"
 ```
 
 #### Trigger for Auto-Creating Profiles
+
 ```sql
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
@@ -68,6 +72,7 @@ CREATE TRIGGER on_auth_user_created
 ### 2. Storage Configuration
 
 #### Avatars Bucket
+
 - **Name**: `avatars`
 - **Privacy**: Private (signed URLs)
 - **Structure**: `{user-id}/avatar.{ext}`
@@ -75,6 +80,7 @@ CREATE TRIGGER on_auth_user_created
 - **Allowed types**: jpg, jpeg, png, gif, webp
 
 #### RLS Policies for Storage
+
 ```sql
 -- Enable RLS
 ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
@@ -84,7 +90,7 @@ CREATE POLICY "Allow avatar upload"
   ON storage.objects FOR INSERT
   TO authenticated
   WITH CHECK (
-    bucket_id = 'avatars' 
+    bucket_id = 'avatars'
     AND (storage.foldername(name))[1] = auth.uid()::text
   );
 
@@ -93,7 +99,7 @@ CREATE POLICY "Allow avatar view"
   ON storage.objects FOR SELECT
   TO authenticated
   USING (
-    bucket_id = 'avatars' 
+    bucket_id = 'avatars'
     AND (storage.foldername(name))[1] = auth.uid()::text
   );
 
@@ -102,7 +108,7 @@ CREATE POLICY "Allow avatar delete"
   ON storage.objects FOR DELETE
   TO authenticated
   USING (
-    bucket_id = 'avatars' 
+    bucket_id = 'avatars'
     AND (storage.foldername(name))[1] = auth.uid()::text
   );
 ```
@@ -110,6 +116,7 @@ CREATE POLICY "Allow avatar delete"
 ### 3. Route Structure
 
 #### Public Routes (No Auth)
+
 - `/` - Homepage
 - `/app/[slug]` - App details
 - `/category/[slug]` - Categories
@@ -120,6 +127,7 @@ CREATE POLICY "Allow avatar delete"
 - `/auth/forgot-password` - Password reset
 
 #### Protected Routes (Auth Required)
+
 - `/dashboard` - User dashboard
 - `/dashboard/settings` - Profile settings
 - `/dashboard/apps` - My apps
@@ -189,36 +197,42 @@ export interface AuthState {
 ### 6. Implementation Order (Priority)
 
 #### Phase 1: Database & Storage (Critical)
+
 1. Create profiles table migration
 2. Create storage bucket for avatars
 3. Add RLS policies
 4. Create profile trigger function
 
 #### Phase 2: OAuth Configuration (Critical)
+
 1. Configure Google OAuth in Supabase Dashboard
 2. Configure GitHub OAuth in Supabase Dashboard
 3. Update environment variables
 4. Create OAuth callback handler
 
 #### Phase 3: UI Components (High)
+
 1. Update login page with OAuth buttons
 2. Update signup page with OAuth buttons
 3. Create forgot password page
 4. Create dashboard layout with sidebar
 
 #### Phase 4: Settings & Profile (High)
+
 1. Create profile settings page
 2. Create avatar upload component
 3. Create profile edit form
 4. Add profile data hooks
 
 #### Phase 5: Route Protection (Medium)
+
 1. Update middleware for route protection
 2. Create protected layout wrapper
 3. Add auth checks to protected pages
 4. Handle auth redirects
 
 #### Phase 6: Testing & Polish (Medium)
+
 1. Test all auth flows
 2. Test OAuth providers
 3. Test avatar upload
@@ -229,18 +243,21 @@ export interface AuthState {
 ### OAuth Providers Setup
 
 #### Google OAuth
+
 1. Go to Google Cloud Console
 2. Create OAuth 2.0 credentials
 3. Add authorized redirect URI: `https://<project>.supabase.co/auth/v1/callback`
 4. Copy Client ID and Secret to Supabase Dashboard
 
 #### GitHub OAuth
+
 1. Go to GitHub Settings → Developer Settings → OAuth Apps
 2. Create new OAuth App
 3. Authorization callback URL: `https://<project>.supabase.co/auth/v1/callback`
 4. Copy Client ID and Secret to Supabase Dashboard
 
 ### Environment Variables
+
 ```bash
 # Existing
 NEXT_PUBLIC_SUPABASE_URL=
