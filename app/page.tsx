@@ -8,6 +8,7 @@ import { AuthNav } from "@/components/auth/auth-nav";
 import { getApps, getCategories } from "@/lib/supabase/client";
 import { getAllPosts } from "@/lib/blog/posts";
 import type { App } from "@/lib/supabase/types";
+import type { BlogPost } from "@/lib/blog/posts";
 
 // Map database app to AppCard format
 function mapAppToCardFormat(app: App) {
@@ -269,7 +270,7 @@ export default async function Home() {
 }
 
 // Featured Blog Section Component
-function LatestBlogSection({ post }: { post: any }) {
+function LatestBlogSection({ post }: { post: BlogPost | null }) {
   if (!post) return null;
 
   return (
