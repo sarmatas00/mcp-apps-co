@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { getAllPosts, getPostBySlug, getRelatedPosts } from "@/lib/blog/posts";
+import { getAuthorByName } from "@/lib/blog/authors";
 import { SocialShare } from "@/components/blog/social-share";
 
 export async function generateStaticParams() {
@@ -110,7 +111,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
         {/* Author & Date */}
         <div className="flex flex-wrap items-center gap-4 text-sm text-[#666] mb-12 pb-12 border-b border-[#333]">
-          <span className="text-white">{post.author}</span>
+          <AuthorLink name={post.author} />
           <span>·</span>
           <time dateTime={post.date}>
             {new Date(post.date).toLocaleDateString("en-US", {
@@ -250,4 +251,22 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       </footer>
     </div>
   );
+}
+
+// Author Link Component
+function AuthorLink({ name }: { name: string }) {
+  const author = getAuthorByName(name);
+
+  if (author) {
+    return (
+      <Link
+        href={`/blog/author/${author.slug}`}
+        className="text-white hover:text-[#dc2626] transition-colors"
+      >
+        {name}
+      </Link>
+    );
+  }
+
+  return <span className="text-white">{name}</span>;
 }
