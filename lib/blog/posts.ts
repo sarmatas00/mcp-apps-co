@@ -6,10 +6,10 @@ import readingTime from "reading-time";
 // Try multiple possible paths for content directory
 function getPostsDirectory(): string {
   const possiblePaths = [
-    path.join(process.cwd(), "content/blog"),
-    path.join(process.cwd(), "..", "content/blog"),
-    path.join(__dirname, "../../../content/blog"),
-    "/var/task/content/blog", // Vercel serverless
+    path.join(process.cwd(), "public/blog"),
+    path.join(process.cwd(), "..", "public/blog"),
+    path.join(__dirname, "../../../public/blog"),
+    "/var/task/public/blog", // Vercel serverless
   ];
 
   for (const dir of possiblePaths) {
@@ -19,7 +19,7 @@ function getPostsDirectory(): string {
   }
 
   // Default fallback
-  return path.join(process.cwd(), "content/blog");
+  return path.join(process.cwd(), "public/blog");
 }
 
 const postsDirectory = getPostsDirectory();
