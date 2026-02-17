@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getAllPosts, getAllCategories, getAllTags } from "@/lib/blog/posts";
 import { BlogGrid } from "@/components/blog/blog-card";
+import { NewsletterSignup } from "@/components/blog/newsletter-signup";
 
 export const metadata: Metadata = {
   title: "Blog - MCP Apps",
@@ -111,6 +112,11 @@ export default function BlogPage() {
             </p>
           </div>
         )}
+
+        {/* Newsletter */}
+        <section className="mt-24">
+          <NewsletterSignup />
+        </section>
       </main>
 
       {/* Footer */}
