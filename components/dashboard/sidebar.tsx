@@ -9,6 +9,7 @@ import {
   BarChart3,
   LogOut,
   User,
+  Home,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/lib/supabase/client";
@@ -45,6 +46,14 @@ const navItems = [
   },
 ];
 
+const externalNavItems = [
+  {
+    label: "Browse Apps",
+    href: "/",
+    icon: Home,
+  },
+];
+
 export function DashboardSidebar({ user }: DashboardSidebarProps) {
   const pathname = usePathname();
 
@@ -60,8 +69,13 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
     <aside className="w-64 min-h-screen border-r border-[#333] bg-[#0a0a0a] flex flex-col">
       {/* Logo */}
       <div className="p-6 border-b border-[#333]">
-        <Link href="/" className="text-xl font-black tracking-tight uppercase">
-          MCP Apps
+        <Link href="/" className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-[#dc2626] flex items-center justify-center">
+            <span className="text-white font-black text-sm">M</span>
+          </div>
+          <span className="text-xl font-black tracking-tight uppercase">
+            MCP Apps
+          </span>
         </Link>
       </div>
 
@@ -111,6 +125,30 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
             );
           })}
         </ul>
+
+        {/* External Links */}
+        <div className="mt-6 pt-6 border-t border-[#333]">
+          <p className="text-[10px] tracking-[0.15em] uppercase text-[#666] mb-2 px-4">
+            Directory
+          </p>
+          <ul className="space-y-1">
+            {externalNavItems.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="flex items-center gap-3 px-4 py-3 text-sm text-[#666] hover:text-white hover:bg-[#1a1a1a] transition-colors"
+                  >
+                    <Icon className="w-4 h-4" />
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </nav>
 
       {/* Sign Out */}

@@ -249,12 +249,15 @@ export function ProfileForm({ userId, profile, email }: ProfileFormProps) {
           <Input
             id="website"
             name="website"
-            type="url"
+            type="text"
             value={formData.website}
             onChange={handleInputChange}
             className="bg-[#1a1a1a] border-[#333] text-white placeholder:text-[#555]"
-            placeholder="https://yourwebsite.com"
+            placeholder="yourwebsite.com or https://yourwebsite.com"
           />
+          <p className="text-xs text-[#666] mt-1">
+            Enter domain (e.g., x.com) or full URL (e.g., https://x.com)
+          </p>
         </div>
 
         <div>

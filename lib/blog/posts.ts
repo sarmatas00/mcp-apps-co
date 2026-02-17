@@ -3,7 +3,26 @@ import path from "path";
 import matter from "gray-matter";
 import readingTime from "reading-time";
 
-const postsDirectory = path.join(process.cwd(), "content/blog");
+// Try multiple possible paths for content directory
+function getPostsDirectory(): string {
+  const possiblePaths = [
+    path.join(process.cwd(), "content/blog"),
+    path.join(process.cwd(), "..", "content/blog"),
+    path.join(__dirname, "../../../content/blog"),
+    "/var/task/content/blog", // Vercel serverless
+  ];
+
+  for (const dir of possiblePaths) {
+    if (fs.existsSync(dir)) {
+      return dir;
+    }
+  }
+
+  // Default fallback
+  return path.join(process.cwd(), "content/blog");
+}
+
+const postsDirectory = getPostsDirectory();
 
 export interface BlogPost {
   slug: string;

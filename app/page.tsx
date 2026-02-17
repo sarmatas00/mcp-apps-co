@@ -58,11 +58,18 @@ export default async function Home() {
       <nav className="border-b border-[#333]">
         <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12">
           <div className="flex h-16 items-center justify-between gap-4">
-            <Link href="/" className="flex items-center gap-4 flex-shrink-0">
-              <span className="text-xs font-medium tracking-[0.2em] uppercase text-[#666]">
-                MCP
-              </span>
-              <span className="text-sm font-semibold tracking-tight">APPS</span>
+            <Link href="/" className="flex items-center gap-3 flex-shrink-0">
+              <div className="w-8 h-8 bg-[#dc2626] flex items-center justify-center">
+                <span className="text-white font-black text-sm">M</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-xs font-medium tracking-[0.2em] uppercase text-[#666]">
+                  MCP
+                </span>
+                <span className="text-sm font-semibold tracking-tight">
+                  APPS
+                </span>
+              </div>
             </Link>
             <div className="flex-1 max-w-md hidden sm:block">
               <SearchCommand />
