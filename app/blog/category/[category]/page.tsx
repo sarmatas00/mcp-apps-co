@@ -1,6 +1,5 @@
 import Link from "next/link";
 import {
-  getAllPosts,
   getPostsByCategory,
   getAllCategories,
 } from "@/lib/blog/posts";
@@ -16,19 +15,21 @@ export async function generateStaticParams() {
 
 export const dynamicParams = true;
 
-export function generateMetadata({ params }: { params: { category: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ category: string }> }) {
+  const { category } = await params;
   return {
-    title: `${params.category} - MCP Apps Blog`,
-    description: `Browse all blog posts in ${params.category}`,
+    title: `${category} - MCP Apps Blog`,
+    description: `Browse all blog posts in ${category}`,
   };
 }
 
-export default function CategoryPage({
+export default async function CategoryPage({
   params,
 }: {
-  params: { category: string };
+  params: Promise<{ category: string }>;
 }) {
-  const posts = getPostsByCategory(params.category);
+  const { category } = await params;
+  const posts = getPostsByCategory(category);
   const allCategories = getAllCategories();
 
   return (
@@ -45,7 +46,7 @@ export default function CategoryPage({
               Blog
             </Link>
             <span className="text-gray-600">/</span>
-            <span className="text-red-500 capitalize">{params.category}</span>
+            <span className="text-red-500 capitalize">{category}</span>
           </nav>
         </div>
       </header>
@@ -53,7 +54,7 @@ export default function CategoryPage({
       <main className="mx-auto max-w-4xl px-6 py-16">
         {/* Title */}
         <h1 className="text-4xl font-bold mb-4 capitalize">
-          {params.category}
+          {category}
         </h1>
         <p className="text-gray-400 mb-12">
           {posts.length} {posts.length === 1 ? "post" : "posts"} in this
@@ -104,17 +105,17 @@ export default function CategoryPage({
             All Categories
           </h3>
           <div className="flex flex-wrap gap-2">
-            {allCategories.map((category) => (
+            {allCategories.map((cat) => (
               <Link
-                key={category}
-                href={`/blog/category/${category}`}
+                key={cat}
+                href={`/blog/category/${cat}`}
                 className={`px-3 py-1 text-sm border rounded-sm transition-colors capitalize ${
-                  category === params.category
+                  cat === category
                     ? "border-red-500 text-red-500"
                     : "border-[#333] text-gray-400 hover:text-white hover:border-red-500"
                 }`}
               >
-                {category}
+                {cat}
               </Link>
             ))}
           </div>

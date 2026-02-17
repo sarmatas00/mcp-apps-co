@@ -9,10 +9,11 @@ export async function generateStaticParams() {
   }));
 }
 
-export default function AppDetailPage({
+export default async function AppDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  return <AppDetailClient slug={params.slug} />;
+  const { slug } = await params;
+  return <AppDetailClient slug={slug} />;
 }

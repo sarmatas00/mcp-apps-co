@@ -11,8 +11,9 @@ export async function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: { params: { name: string } }) {
-  const author = getAuthorBySlug(params.name);
+export async function generateMetadata({ params }: { params: Promise<{ name: string }> }) {
+  const { name } = await params;
+  const author = getAuthorBySlug(name);
 
   if (!author) {
     return {
@@ -26,8 +27,9 @@ export function generateMetadata({ params }: { params: { name: string } }) {
   };
 }
 
-export default function AuthorPage({ params }: { params: { name: string } }) {
-  const author = getAuthorBySlug(params.name);
+export default async function AuthorPage({ params }: { params: Promise<{ name: string }> }) {
+  const { name } = await params;
+  const author = getAuthorBySlug(name);
 
   if (!author) {
     notFound();

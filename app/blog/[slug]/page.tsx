@@ -13,20 +13,16 @@ export async function generateStaticParams() {
 // Allow dynamic rendering for paths not generated at build time
 export const dynamicParams = true;
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  console.log("BlogPostPage rendered with slug:", params.slug);
-  console.log(
-    "Available posts:",
-    staticPosts.map((p) => p.slug),
-  );
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
 
-  const post = staticPosts.find((p) => p.slug === params.slug);
+  const post = staticPosts.find((p) => p.slug === slug);
 
   if (!post) {
     return (
       <div className="min-h-screen bg-[#111] text-white p-8">
         <h1 className="text-2xl font-bold">Post Not Found</h1>
-        <p className="mt-4 text-gray-400">Slug received: {params.slug}</p>
+        <p className="mt-4 text-gray-400">Slug received: {slug}</p>
         <p className="mt-2 text-gray-400">
           Available slugs: {staticPosts.map((p) => p.slug).join(", ")}
         </p>

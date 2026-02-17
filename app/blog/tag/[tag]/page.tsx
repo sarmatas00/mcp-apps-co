@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAllPosts, getPostsByTag, getAllTags } from "@/lib/blog/posts";
+import { getPostsByTag, getAllTags } from "@/lib/blog/posts";
 import { format } from "date-fns";
 
 // Generate static pages for all tags
@@ -12,15 +12,17 @@ export async function generateStaticParams() {
 
 export const dynamicParams = true;
 
-export function generateMetadata({ params }: { params: { tag: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ tag: string }> }) {
+  const { tag } = await params;
   return {
-    title: `Posts tagged #${params.tag} - MCP Apps Blog`,
-    description: `Browse all blog posts tagged with #${params.tag}`,
+    title: `Posts tagged #${tag} - MCP Apps Blog`,
+    description: `Browse all blog posts tagged with #${tag}`,
   };
 }
 
-export default function TagPage({ params }: { params: { tag: string } }) {
-  const posts = getPostsByTag(params.tag);
+export default async function TagPage({ params }: { params: Promise<{ tag: string }> }) {
+  const { tag } = await params;
+  const posts = getPostsByTag(tag);
   const allTags = getAllTags();
 
   return (
@@ -37,7 +39,7 @@ export default function TagPage({ params }: { params: { tag: string } }) {
               Blog
             </Link>
             <span className="text-gray-600">/</span>
-            <span className="text-red-500">#{params.tag}</span>
+            <span className="text-red-500">#{tag}</span>
           </nav>
         </div>
       </header>
@@ -45,7 +47,7 @@ export default function TagPage({ params }: { params: { tag: string } }) {
       <main className="mx-auto max-w-4xl px-6 py-16">
         {/* Title */}
         <h1 className="text-4xl font-bold mb-4">
-          Posts tagged <span className="text-red-500">#{params.tag}</span>
+          Posts tagged <span className="text-red-500">#{tag}</span>
         </h1>
         <p className="text-gray-400 mb-12">
           {posts.length} {posts.length === 1 ? "post" : "posts"} found
@@ -95,17 +97,17 @@ export default function TagPage({ params }: { params: { tag: string } }) {
             All Tags
           </h3>
           <div className="flex flex-wrap gap-2">
-            {allTags.map((tag) => (
+            {allTags.map((t) => (
               <Link
-                key={tag}
-                href={`/blog/tag/${tag}`}
+                key={t}
+                href={`/blog/tag/${t}`}
                 className={`px-3 py-1 text-sm border rounded-sm transition-colors ${
-                  tag === params.tag
+                  t === tag
                     ? "border-red-500 text-red-500"
                     : "border-[#333] text-gray-400 hover:text-white hover:border-red-500"
                 }`}
               >
-                #{tag}
+                #{t}
               </Link>
             ))}
           </div>
