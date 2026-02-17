@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { getAllPosts, getPostBySlug, getRelatedPosts } from "@/lib/blog/posts";
 import { getAuthorByName } from "@/lib/blog/authors";
 import { SocialShare } from "@/components/blog/social-share";
+import { CommentsSection } from "@/components/blog/comments";
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -167,6 +168,9 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             Back to Blog
           </Link>
         </div>
+
+        {/* Comments */}
+        <CommentsSection postSlug={post.slug} />
       </article>
 
       {/* Related Posts */}
