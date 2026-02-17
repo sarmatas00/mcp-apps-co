@@ -2,12 +2,9 @@ import Link from "next/link";
 import { getAllPosts, getPostsByTag, getAllTags } from "@/lib/blog/posts";
 import { format } from "date-fns";
 
-export async function generateStaticParams() {
-  const tags = getAllTags();
-  return tags.map((tag) => ({
-    tag: tag,
-  }));
-}
+// Dynamic rendering
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
 
 export function generateMetadata({ params }: { params: { tag: string } }) {
   return {

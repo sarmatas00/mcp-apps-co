@@ -7,12 +7,10 @@ import { getAuthorByName } from "@/lib/blog/authors";
 import { SocialShare } from "@/components/blog/social-share";
 import { CommentsSection } from "@/components/blog/comments";
 
-export async function generateStaticParams() {
-  const posts = getAllPosts();
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
-}
+// Dynamic rendering - don't generate static params
+// This allows the page to work at runtime with filesystem access
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
 
 export async function generateMetadata({
   params,

@@ -6,12 +6,9 @@ import {
 } from "@/lib/blog/posts";
 import { format } from "date-fns";
 
-export async function generateStaticParams() {
-  const categories = getAllCategories();
-  return categories.map((category) => ({
-    category: category,
-  }));
-}
+// Dynamic rendering
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
 
 export function generateMetadata({ params }: { params: { category: string } }) {
   return {

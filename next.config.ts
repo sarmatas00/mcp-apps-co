@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Disable static export to allow dynamic blog routes
+  // output: 'export',
 };
 
 export default nextConfig;
