@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { getAllPosts, getPostBySlug, getRelatedPosts } from "@/lib/blog/posts";
+import { SocialShare } from "@/components/blog/social-share";
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -146,6 +147,14 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             </div>
           </div>
         )}
+
+        {/* Share */}
+        <div className="mt-12 pt-8 border-t border-[#333]">
+          <h2 className="text-[10px] font-medium tracking-[0.2em] uppercase text-[#666] mb-4">
+            Share this post
+          </h2>
+          <SocialShare url={`/blog/${post.slug}`} title={post.title} />
+        </div>
 
         {/* Back to Blog */}
         <div className="mt-12">
