@@ -1,10 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { AppCard, AppGrid } from "@/components/app-card";
 import { SearchCommand } from "@/components/search-command";
 import { CategoryFilter } from "@/components/category-filter";
 import { AuthNav } from "@/components/auth/auth-nav";
 import { getApps, getCategories } from "@/lib/supabase/client";
+import { getAllPosts } from "@/lib/blog/posts";
 import type { App } from "@/lib/supabase/types";
 
 // Map database app to AppCard format
@@ -34,6 +36,10 @@ export default async function Home() {
   // Fetch data from Supabase
   const apps = await getApps();
   const categories = await getCategories();
+
+  // Fetch latest blog post
+  const blogPosts = getAllPosts();
+  const latestPost = blogPosts[0] || null;
 
   // Map categories for the filter
   const categoryFilters = categories.map((cat) => ({
@@ -237,6 +243,9 @@ export default async function Home() {
             )}
           </div>
         </section>
+
+        {/* Featured Blog Post */}
+        <LatestBlogSection post={latestPost} />
       </main>
 
       {/* Footer */}
@@ -256,5 +265,75 @@ export default async function Home() {
         </div>
       </footer>
     </div>
+  );
+}
+
+// Featured Blog Section Component
+function LatestBlogSection({ post }: { post: any }) {
+  if (!post) return null;
+
+  return (
+    <section className="border-t border-[#333] bg-[#0a0a0a]">
+      <div className="mx-auto max-w-[1400px] px-6 sm:px-8 lg:px-12 py-24 sm:py-32">
+        {/* Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-16 pb-8 border-b border-[#333]">
+          <div>
+            <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-[#666] block mb-2">
+              From the Blog
+            </span>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-[-0.03em] uppercase">
+              LATEST
+            </h2>
+          </div>
+          <Link
+            href="/blog"
+            className="inline-flex items-center gap-2 text-[#dc2626] hover:text-[#b91c1c] transition-colors text-sm font-medium tracking-wide uppercase"
+          >
+            View All Posts
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        {/* Featured Post */}
+        <article className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+          {/* Content */}
+          <div className="flex flex-col justify-center">
+            {post.category && (
+              <span className="text-[10px] font-medium tracking-[0.2em] uppercase text-[#dc2626] mb-4">
+                {post.category}
+              </span>
+            )}
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mb-4">
+              {post.title}
+            </h3>
+            <p className="text-[#888] text-lg mb-6 leading-relaxed">
+              {post.excerpt}
+            </p>
+            <div className="flex items-center gap-4 text-sm text-[#666] mb-8">
+              <span>{post.author}</span>
+              <span>·</span>
+              <span>{post.readTime} min read</span>
+            </div>
+            <Link
+              href={`/blog/${post.slug}`}
+              className="inline-flex items-center gap-3 bg-[#dc2626] hover:bg-[#b91c1c] text-white px-6 py-3 text-sm font-semibold tracking-[0.05em] uppercase transition-colors w-fit"
+            >
+              Read Article
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          {/* Visual */}
+          <div className="bg-[#1a1a1a] border border-[#333] aspect-[4/3] lg:aspect-auto flex items-center justify-center">
+            <div className="text-center p-8">
+              <div className="w-16 h-16 border-2 border-[#dc2626] mx-auto mb-4 flex items-center justify-center">
+                <span className="text-[#dc2626] font-black text-2xl">B</span>
+              </div>
+              <p className="text-[#666] text-sm">Blog</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
   );
 }
