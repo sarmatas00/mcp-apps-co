@@ -326,3 +326,4 @@ _Browse all data visualization MCP Apps at mcp-apps.co/category/data-viz_`,
       "Best data visualization MCP Apps for AI conversations. Interactive charts, graphs, and dashboards for Claude, ChatGPT, and VS Code.",
   },
 ];
+
