@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { User } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import type { Profile } from "@/lib/supabase/types";
@@ -67,12 +68,13 @@ export function AuthNav() {
           href="/dashboard"
           className="flex items-center gap-3 hover:opacity-80 transition-opacity"
         >
-          <div className="w-8 h-8 rounded bg-[#1a1a1a] border border-[#333] flex items-center justify-center overflow-hidden">
+          <div className="relative w-8 h-8 rounded bg-[#1a1a1a] border border-[#333] flex items-center justify-center overflow-hidden">
             {user.profile?.avatar_url ? (
-              <img
+              <Image
                 src={user.profile.avatar_url}
                 alt={displayName}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
             ) : (
               <User className="w-4 h-4 text-[#666]" />

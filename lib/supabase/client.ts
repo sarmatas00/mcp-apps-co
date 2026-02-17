@@ -104,14 +104,8 @@ export async function getProfile(userId: string): Promise<Profile | null> {
 
 export async function updateProfile(userId: string, updates: Partial<Profile>) {
   try {
-    // Use untyped client to bypass TypeScript issues with profiles table
-    const { createClient } = await import("@supabase/supabase-js");
-    const client = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    );
-
-    const { data, error } = await client
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase as any)
       .from("profiles")
       .update(updates)
       .eq("id", userId)
@@ -409,6 +403,10 @@ export async function getReviewsByAppId(appId: string): Promise<Review[]> {
 
 export async function searchApps(query: string): Promise<App[]> {
   try {
+    // Sanitize query to prevent filter injection via special characters
+    const sanitized = query.replace(/[%_,()]/g, "");
+    if (!sanitized.trim()) return [];
+
     const { data, error } = await supabase
       .from("apps")
       .select(
@@ -420,7 +418,7 @@ export async function searchApps(query: string): Promise<App[]> {
       )
       .eq("is_published", true)
       .or(
-        `name.ilike.%${query}%,description.ilike.%${query}%,tagline.ilike.%${query}%`,
+        `name.ilike.%${sanitized}%,description.ilike.%${sanitized}%,tagline.ilike.%${sanitized}%`,
       )
       .limit(20);
 

@@ -4,14 +4,14 @@ import { Card } from "@/components/ui/card";
 export default async function DashboardPage() {
   const supabase = await createClient();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
   // Get user's apps count
   const { count: appsCount } = await supabase
     .from("apps")
     .select("*", { count: "exact", head: true })
-    .eq("developer_id", session?.user.id);
+    .eq("developer_id", user?.id);
 
   // Get total views (placeholder - would need analytics table)
   const totalViews = 0;

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { getBlogImageUrl } from "@/lib/supabase/blog-storage";
 
 interface BlogImageProps {
@@ -63,11 +64,13 @@ export function BlogImage({ src, alt, className = "" }: BlogImageProps) {
   }
 
   return (
-    <img
+    <Image
       src={imageUrl}
       alt={alt}
+      width={0}
+      height={0}
+      sizes="100vw"
       className={`w-full h-auto ${className}`}
-      loading="lazy"
     />
   );
 }

@@ -8,7 +8,7 @@ import {
   getCategories,
   getCategoryBySlug,
 } from "@/lib/supabase/client";
-import type { App, Category, CategoryWithCount } from "@/lib/supabase/types";
+import type { App, CategoryWithCount } from "@/lib/supabase/types";
 import { notFound } from "next/navigation";
 
 // Generate static paths for all categories

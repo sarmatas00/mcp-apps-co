@@ -5,10 +5,10 @@ import { getCategories } from "@/lib/supabase/client";
 export default async function SubmitAppPage() {
   const supabase = await createClient();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     redirect("/auth/login?redirect=/submit");
   }
 
@@ -19,10 +19,10 @@ export default async function SubmitAppPage() {
 
     const supabase = await createClient();
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (!session) {
+    if (!user) {
       return redirect("/auth/login");
     }
 
@@ -42,7 +42,7 @@ export default async function SubmitAppPage() {
       category_id: categoryId,
       github_url: githubUrl,
       npm_package: npmPackage,
-      developer_id: session.user.id,
+      developer_id: user.id,
       is_published: false, // Requires review
       compatibility_claude: true,
       compatibility_chatgpt: false,

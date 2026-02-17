@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 import { User, Camera, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -143,10 +144,11 @@ export function ProfileForm({ userId, profile, email }: ProfileFormProps) {
             className="relative w-20 h-20 rounded bg-[#1a1a1a] border border-[#333] flex items-center justify-center overflow-hidden hover:border-[#dc2626] transition-colors group"
           >
             {profile?.avatar_url ? (
-              <img
+              <Image
                 src={profile.avatar_url}
                 alt="Avatar"
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
             ) : (
               <User className="w-8 h-8 text-[#666]" />

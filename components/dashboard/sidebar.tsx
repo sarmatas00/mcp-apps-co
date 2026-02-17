@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -82,12 +83,13 @@ export function DashboardSidebar({ user }: DashboardSidebarProps) {
       {/* User Info */}
       <div className="p-6 border-b border-[#333]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded bg-[#1a1a1a] border border-[#333] flex items-center justify-center overflow-hidden">
+          <div className="relative w-10 h-10 rounded bg-[#1a1a1a] border border-[#333] flex items-center justify-center overflow-hidden">
             {avatarUrl ? (
-              <img
+              <Image
                 src={avatarUrl}
                 alt={displayName}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
             ) : (
               <User className="w-5 h-5 text-[#666]" />
