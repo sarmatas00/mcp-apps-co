@@ -12,7 +12,11 @@ export async function generateStaticParams() {
 
 export const dynamicParams = true;
 
-export async function generateMetadata({ params }: { params: Promise<{ tag: string }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ tag: string }>;
+}) {
   const { tag } = await params;
   return {
     title: `Posts tagged #${tag} - MCP Apps Blog`,
@@ -20,7 +24,11 @@ export async function generateMetadata({ params }: { params: Promise<{ tag: stri
   };
 }
 
-export default async function TagPage({ params }: { params: Promise<{ tag: string }> }) {
+export default async function TagPage({
+  params,
+}: {
+  params: Promise<{ tag: string }>;
+}) {
   const { tag } = await params;
   const posts = getPostsByTag(tag);
   const allTags = getAllTags();

@@ -1,8 +1,5 @@
 import Link from "next/link";
-import {
-  getPostsByCategory,
-  getAllCategories,
-} from "@/lib/blog/posts";
+import { getPostsByCategory, getAllCategories } from "@/lib/blog/posts";
 import { format } from "date-fns";
 
 // Generate static pages for all categories
@@ -15,7 +12,11 @@ export async function generateStaticParams() {
 
 export const dynamicParams = true;
 
-export async function generateMetadata({ params }: { params: Promise<{ category: string }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ category: string }>;
+}) {
   const { category } = await params;
   return {
     title: `${category} - MCP Apps Blog`,
@@ -53,9 +54,7 @@ export default async function CategoryPage({
 
       <main className="mx-auto max-w-4xl px-6 py-16">
         {/* Title */}
-        <h1 className="text-4xl font-bold mb-4 capitalize">
-          {category}
-        </h1>
+        <h1 className="text-4xl font-bold mb-4 capitalize">{category}</h1>
         <p className="text-gray-400 mb-12">
           {posts.length} {posts.length === 1 ? "post" : "posts"} in this
           category
