@@ -38,7 +38,7 @@ export default async function Home() {
   const categories = await getCategories();
 
   // Fetch latest blog post
-  const blogPosts = getAllPosts();
+  const blogPosts = await getAllPosts();
   const latestPost = blogPosts[0] || null;
 
   // Map categories for the filter

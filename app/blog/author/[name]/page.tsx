@@ -4,6 +4,8 @@ import { Twitter, Github, Globe, ArrowUpRight } from "lucide-react";
 import { getAllAuthors, getAuthorBySlug } from "@/lib/blog/authors";
 import { getAllPosts } from "@/lib/blog/posts";
 
+export const revalidate = 300;
+
 export async function generateStaticParams() {
   const authors = getAllAuthors();
   return authors.map((author) => ({
@@ -44,7 +46,7 @@ export default async function AuthorPage({
   }
 
   // Get posts by this author
-  const allPosts = getAllPosts();
+  const allPosts = await getAllPosts();
   const authorPosts = allPosts.filter(
     (post) => post.author.toLowerCase() === author.name.toLowerCase(),
   );

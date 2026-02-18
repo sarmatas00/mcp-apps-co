@@ -5,15 +5,17 @@ import { ArrowLeft, Clock, Calendar } from "lucide-react";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
-import { staticPosts } from "@/lib/blog/static-posts";
-import { getRelatedPosts } from "@/lib/blog/posts";
+import { getPostBySlug, getRelatedPosts, getAllSlugs } from "@/lib/blog/posts";
 import { getAuthorByName } from "@/lib/blog/authors";
 import { CommentsSection } from "@/components/blog/comments";
 import { NewsletterSignup } from "@/components/blog/newsletter-signup";
 import { BlogCard } from "@/components/blog/blog-card";
 
+export const revalidate = 300;
+
 export async function generateStaticParams() {
-  return staticPosts.map((post) => ({ slug: post.slug }));
+  const slugs = await getAllSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export const dynamicParams = true;
@@ -24,7 +26,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = staticPosts.find((p) => p.slug === slug);
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     return { title: "Post Not Found - MCP Apps" };
@@ -42,7 +44,7 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = staticPosts.find((p) => p.slug === slug);
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     return (
@@ -89,7 +91,11 @@ export default async function BlogPostPage({
   }
 
   const author = getAuthorByName(post.author);
-  const relatedPosts = getRelatedPosts(post.slug, post.category, post.tags);
+  const relatedPosts = await getRelatedPosts(
+    post.slug,
+    post.category,
+    post.tags,
+  );
 
   return (
     <div className="min-h-screen bg-[#111] text-white">

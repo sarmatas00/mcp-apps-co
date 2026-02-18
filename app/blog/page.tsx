@@ -4,16 +4,20 @@ import { getAllPosts, getAllCategories, getAllTags } from "@/lib/blog/posts";
 import { BlogGrid } from "@/components/blog/blog-card";
 import { NewsletterSignup } from "@/components/blog/newsletter-signup";
 
+export const revalidate = 300;
+
 export const metadata: Metadata = {
   title: "Blog - MCP Apps",
   description:
     "Tutorials, showcases, and updates about MCP Apps and the AI ecosystem.",
 };
 
-export default function BlogPage() {
-  const posts = getAllPosts();
-  const categories = getAllCategories();
-  const tags = getAllTags();
+export default async function BlogPage() {
+  const [posts, categories, tags] = await Promise.all([
+    getAllPosts(),
+    getAllCategories(),
+    getAllTags(),
+  ]);
 
   return (
     <div className="min-h-screen bg-[#111] text-white">
@@ -132,7 +136,7 @@ export default function BlogPage() {
               </span>
             </Link>
             <p className="text-[10px] tracking-[0.1em] uppercase text-[#444]">
-              © 2026 MCP Apps. All rights reserved.
+              &copy; 2026 MCP Apps. All rights reserved.
             </p>
           </div>
         </div>

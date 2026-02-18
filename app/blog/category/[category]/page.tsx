@@ -2,9 +2,10 @@ import Link from "next/link";
 import { getPostsByCategory, getAllCategories } from "@/lib/blog/posts";
 import { format } from "date-fns";
 
-// Generate static pages for all categories
+export const revalidate = 300;
+
 export async function generateStaticParams() {
-  const categories = getAllCategories();
+  const categories = await getAllCategories();
   return categories.map((category) => ({
     category: category,
   }));
@@ -30,8 +31,10 @@ export default async function CategoryPage({
   params: Promise<{ category: string }>;
 }) {
   const { category } = await params;
-  const posts = getPostsByCategory(category);
-  const allCategories = getAllCategories();
+  const [posts, allCategories] = await Promise.all([
+    getPostsByCategory(category),
+    getAllCategories(),
+  ]);
 
   return (
     <div className="min-h-screen bg-[#111] text-white">
@@ -76,11 +79,11 @@ export default async function CategoryPage({
                 <p className="text-gray-400 mb-4">{post.excerpt}</p>
                 <div className="flex items-center gap-4 text-sm text-gray-500">
                   <span>{post.author}</span>
-                  <span>·</span>
+                  <span>&middot;</span>
                   <time dateTime={post.date}>
                     {format(new Date(post.date), "MMMM d, yyyy")}
                   </time>
-                  <span>·</span>
+                  <span>&middot;</span>
                   <span>{post.readTime} min read</span>
                 </div>
               </article>
@@ -93,7 +96,7 @@ export default async function CategoryPage({
               href="/blog"
               className="mt-4 inline-block text-red-500 hover:text-red-400"
             >
-              ← Back to Blog
+              &larr; Back to Blog
             </Link>
           </div>
         )}

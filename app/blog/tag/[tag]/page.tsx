@@ -2,9 +2,10 @@ import Link from "next/link";
 import { getPostsByTag, getAllTags } from "@/lib/blog/posts";
 import { format } from "date-fns";
 
-// Generate static pages for all tags
+export const revalidate = 300;
+
 export async function generateStaticParams() {
-  const tags = getAllTags();
+  const tags = await getAllTags();
   return tags.map((tag) => ({
     tag: tag,
   }));
@@ -30,8 +31,10 @@ export default async function TagPage({
   params: Promise<{ tag: string }>;
 }) {
   const { tag } = await params;
-  const posts = getPostsByTag(tag);
-  const allTags = getAllTags();
+  const [posts, allTags] = await Promise.all([
+    getPostsByTag(tag),
+    getAllTags(),
+  ]);
 
   return (
     <div className="min-h-screen bg-[#111] text-white">
@@ -77,11 +80,11 @@ export default async function TagPage({
                 <p className="text-gray-400 mb-4">{post.excerpt}</p>
                 <div className="flex items-center gap-4 text-sm text-gray-500">
                   <span>{post.author}</span>
-                  <span>·</span>
+                  <span>&middot;</span>
                   <time dateTime={post.date}>
                     {format(new Date(post.date), "MMMM d, yyyy")}
                   </time>
-                  <span>·</span>
+                  <span>&middot;</span>
                   <span>{post.readTime} min read</span>
                 </div>
               </article>
@@ -94,7 +97,7 @@ export default async function TagPage({
               href="/blog"
               className="mt-4 inline-block text-red-500 hover:text-red-400"
             >
-              ← Back to Blog
+              &larr; Back to Blog
             </Link>
           </div>
         )}
